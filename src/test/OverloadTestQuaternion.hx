@@ -74,7 +74,7 @@ class OverloadTestQuaternion extends TestCase, implements IOverloadOperator<Quat
 		assertFalse(quat1 != quat1);
 		assertTrue(quat1 != new Quaternion(1, 2, 3, 8));
 	}	
-	
+
 	public function testConjugateInvert()
 	{
 		var quat = new Quaternion(1, 2, 3, 4);

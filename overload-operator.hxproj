@@ -4,26 +4,27 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="application.nmml" />
-    <movie fps="0" />
-    <movie width="0" />
-    <movie height="0" />
-    <movie version="3" />
-    <movie minorVersion="0" />
-    <movie platform="NME" />
+    <movie path="bin\swf9.swf" />
+    <movie fps="30" />
+    <movie width="800" />
+    <movie height="600" />
+    <movie version="10" />
+    <movie minorVersion="1" />
+    <movie platform="Flash Player" />
     <movie background="#FFFFFF" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="src" />
+    <class path="..\tinkerbell\src" />
   </classpaths>
   <!-- Build options -->
   <build>
     <option directives="" />
     <option flashStrict="True" />
-    <option mainClass="example.fractal.Fractal" />
+    <option mainClass="test.Main" />
     <option enabledebug="True" />
-    <option additional="" />
+    <option additional="--no-opt" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
@@ -48,8 +49,7 @@
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="Custom" />
-    <option testMovieCommand="flash" />
+    <option testMovie="Default" />
   </options>
   <!-- Plugin storage -->
   <storage />

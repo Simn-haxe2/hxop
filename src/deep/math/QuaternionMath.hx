@@ -66,12 +66,12 @@ class QuaternionMath
 
 	// conjugation
 	
-	@op('-x') inline static public function invert(rhs:Quaternion)
+	@op('-') inline static public function invert(rhs:Quaternion)
 	{
 		return new Quaternion( -rhs.x, -rhs.y, -rhs.z, -rhs.w);
 	}
 	
-	@op('~x') inline static public function conjugate(rhs:Quaternion)
+	@op('~') inline static public function conjugate(rhs:Quaternion)
 	{
 		return new Quaternion( -rhs.x, -rhs.y, -rhs.z, rhs.w);
 	}	
