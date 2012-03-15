@@ -11,7 +11,7 @@ class Main
 	 static public function main() 
 	{
 		var r = new TestRunner();
-		r.add(new OverloadTestComplex());
+		//r.add(new OverloadTestComplex());
 		r.add(new OverloadTestQuaternion());
 		r.run();
 	}

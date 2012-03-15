@@ -23,7 +23,7 @@ class ComplexMath
 		return new Complex(a.re - b.re, a.im - b.im);
 	}
 	
-	@op("-x") inline static public function neg(a:Complex):Complex
+	@op("-") inline static public function neg(a:Complex):Complex
 	{
 		return new Complex( -a.re, -a.im);
 	}

@@ -1,9 +1,32 @@
 package deep.macro.math;
 
-#if macro
 import haxe.macro.Context;
 import haxe.macro.Expr;
-#end
+import haxe.macro.Type;
+
+import tink.core.types.Option;
+import tink.core.types.Outcome;
+import tink.macro.build.MemberTransformer;
+import tink.macro.tools.Printer;
+
+using tink.macro.tools.TypeTools;
+using tink.macro.tools.ExprTools;
+using tink.macro.tools.MetadataTools;
+using tink.core.types.Outcome;
+
+typedef UnopFunc = {
+	operator: String,
+	lhs:Type,
+	field:Expr
+};
+
+typedef BinopFunc = {
+	> UnopFunc,
+	rhs: Type,
+	commutative:Bool
+}
+
+typedef IdentDef = Array<{ name : String, type : Null<ComplexType>, expr : Null<Expr> }>; 
 
 /**
  * ...
@@ -12,6 +35,269 @@ import haxe.macro.Expr;
 
 class OverloadOperator 
 {
+	static public var binops:Hash<Array<BinopFunc>> = new Hash();
+	static public var unops:Hash<Array<UnopFunc>> = new Hash();
+	
+	@:macro static public function build():Array<Field>
+	{
+		return new MemberTransformer().build([getMathType, overload]);
+	}
+	
+	static function overload(ctx:ClassBuildContext)
+	{
+		var env = [];
+		
+		for (field in ctx.members)
+		{
+			switch(field.kind)
+			{
+				case FVar(t, e):
+					env.push( { name:field.name, type:t, expr: e } );
+				case FProp(g, s, t, e):
+					env.push( { name:field.name, type:t, expr:e } );
+				case FFun(func):
+					if (func.ret == null)
+						continue;
+					var tfArgs = [];
+					for (arg in func.args)
+						tfArgs.push(arg.type);
+					env.push( { name:field.name, type:TFunction(tfArgs, func.ret), expr:null } );				
+			}
+		}
+		
+		for (member in ctx.members)
+		{
+			switch(member.kind)
+			{
+				case FFun(func):
+					var innerCtx = env.copy();
+					for (arg in func.args)
+						innerCtx.push( { name:arg.name, type:arg.type, expr: null } );					
+					func.expr = transform(func.expr, innerCtx);
+				default:
+			}
+		}
+	}
+
+	static function transform(expr:Expr, ctx:IdentDef)
+	{
+		return expr.transform(function(e) {
+			return switch(e.expr)
+			{
+				case EVars(vars):
+					for (v in vars)
+						ctx.push(v);
+					e;
+				case ETry(et, catches):
+					trace("try");
+					e;
+				case EBinop(op, lhs, rhs):
+					switch(findBinop(op, lhs, rhs, ctx, e.pos))
+					{
+						case None:
+							e;
+						case Some(opFunc):
+							opFunc;
+					}
+				case EUnop(op, pf, e): // TODO: postfix
+					switch(findUnop(op, e, ctx, e.pos))
+					{
+						case None:
+							e;
+						case Some(opFunc):
+							opFunc;
+					}
+				//case EFor(it, inner):
+					//switch(it.expr)
+					//{
+						//case EIn(itIdent, itExpr):
+							//trace(Context.typeof(expr, itIdent.pos));
+						//default:
+					//}
+					//e;
+				//case EConst(c):
+					//switch(c)
+					//{
+						//case CIdent(i):
+							//trace(i);
+							//trace(expr.toString());
+							//trace(Context.typeof(expr, e.pos));
+						//default:
+					//}
+					//e;
+				default:
+					e;
+			}
+		});
+	}
+	
+	static function findBinop(op:Binop, lhs:Expr, rhs:Expr, ctx:IdentDef, p, ?commutative = true)
+	{
+		var opString = Printer.binoperator(op);
+		if (!binops.exists(opString))
+			return None;
+			
+		var t1 = switch(lhs.typeof(ctx))
+		{
+			case Success(t): t;
+			case Failure(f): Context.error("Could not determine type: " +f + " | " +lhs.toString(), p);
+		}
+		var t2 = switch(rhs.typeof(ctx))
+		{
+			case Success(t): t;
+			case Failure(f): Context.error("Could not determine type: " +f, p);
+		}
+		for (opFunc in binops.get(opString))
+		{
+			if (!commutative && !opFunc.commutative)
+				continue;
+
+			switch(t1.isSubTypeOf(opFunc.lhs))
+			{
+				case Failure(s): continue;
+				default:
+			}
+			switch(t2.isSubTypeOf(opFunc.rhs))
+			{
+				case Failure(s): continue;
+				default:
+			}	
+			
+			return Some(opFunc.field.call([lhs, rhs]));
+		}
+		if (commutative)
+			return findBinop(op, rhs, lhs, ctx, p, false);
+		else
+			return None;
+	}
+	
+	static function findUnop(op:Unop, lhs:Expr, ctx:IdentDef, p)
+	{
+		var opString = Printer.unoperator(op);
+		if (!unops.exists(opString))
+			return None;
+		
+		var t1 = switch(lhs.typeof(ctx))
+		{
+			case Success(t): t;
+			case Failure(f): Context.error("Could not determine type: " +f + " | " +lhs.toString(), p);
+		}
+
+		for (opFunc in unops.get(opString))
+		{
+			switch(t1.isSubTypeOf(opFunc.lhs))
+			{
+				case Failure(s): continue;
+				default:
+			}
+
+			return Some(opFunc.field.call([lhs]));
+		}
+		return None;
+	}	
+	
+	static function getMathType(ctx:ClassBuildContext)
+	{
+		var type = getDataType(ctx.cls).reduce();
+		var fields = switch(type.getStatics())
+		{
+			case Success(fields):
+				fields;
+			case Failure(e):
+				Context.error(e, Context.currentPos());
+		}
+		
+		for (field in fields)
+		{
+			if (!field.meta.has("op"))
+				continue;
+
+			for (meta in field.meta.get().getValues("op"))
+			{
+				var operator = switch(meta[0].getString())
+				{
+					case Success(operator):
+						operator;
+					case Failure(_):
+						Context.warning("Argument to @:op must be String.", meta[0].pos);
+						continue;
+				}
+				
+				var commutative = meta.length == 1 ? true : switch(meta[1].getIdent())
+				{
+					case Success(b):
+						switch(b)
+						{
+							case "true": true;
+							case "false": false;
+							default:
+								Context.warning("Second argument to @:op must be Bool.", meta[0].pos);
+								true;
+						}
+					case Failure(f):
+						Context.warning("Second argument to @:op must be Bool.", meta[0].pos);
+						true;
+				}
+				
+				var args = switch(field.kind)
+				{
+					case FMethod(k):
+						switch(field.type.reduce())
+						{
+							case TFun(args, ret):
+								args;
+							default:
+								Context.warning("Only functions can be used as operators.", field.pos);
+								continue;						
+						}
+					default:
+						Context.warning("Only functions can be used as operators.", field.pos);
+						continue;
+				}
+				if (args.length > 2 || args.length == 0)
+				{
+					Context.warning("Only unary and binary operators are supported.", field.pos);
+					continue;
+				}
+				
+				
+				if (args.length == 1)
+				{
+					if (!unops.exists(operator))
+						unops.set(operator, []);
+					unops.get(operator).push( {
+						operator: operator,
+						lhs: args[0].t,
+						field: type.getID().resolve().field(field.name)
+					});
+				}
+				else
+				{
+					if (!binops.exists(operator))
+						binops.set(operator, []);
+					binops.get(operator).push( {
+						operator: operator,
+						lhs: args[0].t,
+						field: type.getID().resolve().field(field.name),
+						rhs: args[1].t,
+						commutative: commutative
+					});
+				}
+			}
+		}
+	}
+	
+	static function getDataType(cls:haxe.macro.Type.ClassType):haxe.macro.Type
+	{
+		for (i in cls.interfaces)
+			if (i.t.get().name == "IOverloadOperator") return i.params[0];
+		
+		return Context.error("Must implement IOverloadOperator.", Context.currentPos());
+	}
+}
+
+
+/*
 	@:macro public static function addMath(m:ExprRequire<Class<Dynamic>>):Expr
 	{
 		var type:haxe.macro.Type;
@@ -350,6 +636,7 @@ class OverloadOperator
 				switch (it.expr)
 				{
 					case EIn(e1, e2):
+
 						e1 = parseExpr(e1, ctx);
 						e2 = parseExpr(e2, ctx);
 						switch (e1.expr)
@@ -583,7 +870,9 @@ class OverloadOperator
 	}
 
 	#end
+	
 }
+
 
 #if macro
 
@@ -625,3 +914,4 @@ class Map<K, V>
 typedef IdentDef = Array<{ name : String, type : Null<ComplexType>, expr : Null<Expr> }>; 
 
 #end
+*/

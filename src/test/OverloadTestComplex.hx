@@ -33,14 +33,28 @@ enum ComplexRef
 	Null;
 }
 
+class ComplexChild extends Complex
+{
+	
+}
+
 class OverloadTestComplex extends TestCase, implements IOverloadOperator<ComplexMath>
 {
 
 	public function new() 
 	{
 		super();
+		
+
 	}
 	
+	function blub()
+	{
+		for (i in [new Complex()])
+			trace(i);
+	}
+	
+	/*
 	function test1()
 	{
 		var c1 = new Complex(2, 3);
@@ -51,7 +65,6 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 		
 		assertTrue(ComplexMath.eq(c3, new Complex( -2, 4)));
 	}
-	
 	function test2()
 	{
 		var c:Complex;
@@ -73,6 +86,7 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 		
 		assertTrue(c3 == ComplexMath.add(c, c2));
 	}
+	
 	
 	function test4()
 	{
@@ -97,6 +111,7 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 		assertTrue(Math.abs(c.re - 1) < 0.00000001);
 	}
 	
+	
 	function test5()
 	{
 		var c = new Complex(0, 1);
@@ -107,6 +122,7 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 		
 		assertTrue( -new Complex(3, -4) == new Complex( -3, 4));
 	}
+	
 	
 	function test6()
 	{
@@ -122,6 +138,7 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 		assertTrue(c1 + c2 * c3 == c1 + (c2 * c3));
 		assertTrue(c1 + c2 * c3 != (c1 + c2) * c3);
 	}
+	
 	
 	var cR(default, null):Complex;
 	var cW(null, default):Complex;
@@ -151,6 +168,7 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 		a[2] = a[0] * a[1];
 		assertTrue(a[2] == ComplexMath.mult(a[0], a[1]));
 	}
+	
 	
 	function test8()
 	{
@@ -212,6 +230,7 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 		}
 	}
 	
+	/*
 	function test10()
 	{
 		var a = [new Complex(0, 1), new Complex(1, 1), new Complex(-1, 3)];
@@ -266,4 +285,11 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 		assertEquals(1.0, c.re);
 		assertEquals(1.0, c.im);
 	}
+	
+	function test14()
+	{
+		var c = new Complex(1, 1);
+		c + c;
+	}
+	*/
 }
