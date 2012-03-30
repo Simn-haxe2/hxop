@@ -81,6 +81,7 @@ class Int32Math
 	
 	@op("<<", true) inline static public var shl = Int32.shl;
 	@op("<<=", true) inline static public var ishl = Int32.shl;
+
 	@op(">>", true) inline static public var shr = Int32.shr;
 	@op(">>=", true) inline static public var ishr = Int32.shr;
 	@op(">>>", true) inline static public var ushr = Int32.ushr;
@@ -93,9 +94,9 @@ class Int32Math
 	@op("^", true) inline static public var xor = Int32.xor;
 	@op("^=", true) inline static public var ixor = Int32.xor;
 	
-	@op("-x") inline static public var neg = Int32.neg;
+	@op("-") inline static public var neg = Int32.neg;
 	
-	@op("++x", false) inline static public function inc(a:Int32):Int32
+	@op("++", false) inline static public function inc(a:Int32):Int32
 	{
 		return Int32.add(a, Int32.ofInt(1));
 	}
@@ -105,7 +106,7 @@ class Int32Math
 		return Int32.add(a, Int32.ofInt(1));
 	}
 	
-	@op("--x", false) inline static public function dec(a:Int32):Int32
+	@op("--", false) inline static public function dec(a:Int32):Int32
 	{
 		return Int32.sub(a, Int32.ofInt(1));
 	}

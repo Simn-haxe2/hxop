@@ -44,12 +44,12 @@ class OverloadTestInt32 extends TestCase, implements IOverloadOperator<Int32Math
 		assertTrue( -i2 >> 1 == -1500);
 		
 		i1 <<= 2;
-		assertTrue(i1 == 120);
+		assertEquals(Int32.ofInt(120), i1);
 		i1 >>= 2;
 		assertTrue(i1 == 30);
 		
 		i1++;
-		assertTrue(i1 == 31);
+		assertEquals(Int32.ofInt(31), i1);
 		--i1;
 		assertTrue(i1 == 30);
 		

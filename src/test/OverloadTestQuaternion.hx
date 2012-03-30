@@ -9,8 +9,14 @@ import haxe.unit.TestCase;
  * @author Simon Krajewski
  */
 
+enum Bla
+{
+	Qua(q:Quaternion);
+}
+ 
 class OverloadTestQuaternion extends TestCase, implements IOverloadOperator<QuaternionMath>
 {	
+	/*
 	public function testGetNorm()
 	{
 		var quat = new Quaternion(5, 3, 1, 1);
@@ -26,7 +32,7 @@ class OverloadTestQuaternion extends TestCase, implements IOverloadOperator<Quat
 		assertEquals(0.0, quatNorm.z);
 		assertEquals(0.0, quatNorm.w);
 	}
-	
+	*/
 	public function testAdd()
 	{
 		var quat = new Quaternion(1, 2, 3, 4) + new Quaternion(1, 1, 1, 1);
@@ -42,6 +48,7 @@ class OverloadTestQuaternion extends TestCase, implements IOverloadOperator<Quat
 		assertEquals(9.0, quat.w);		
 	}
 	
+	/*
 	public function testSubtract()
 	{
 		var quat = new Quaternion(1, 2, 3, 4) - new Quaternion(1, 1, 1, 1);
@@ -154,7 +161,7 @@ class OverloadTestQuaternion extends TestCase, implements IOverloadOperator<Quat
 		assertFloatEquals(0.0, rotated.y);
 		assertFloatEquals(0.0, rotated.z);
 	}
-	
+	*/
 	function assertFloatEquals(ex:Float, act:Float)
 		assertTrue(Math.abs(act - ex) < 0.00000001)
 }

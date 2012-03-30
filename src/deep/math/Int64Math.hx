@@ -144,9 +144,9 @@ class Int64Math
 	@op("^", true) inline static public var xor = Int64.xor;
 	@op("^=", true) inline static public var ixor = Int64.xor;
 	
-	@op("-x") inline static public var neg = Int64.neg;
+	@op("-") inline static public var neg = Int64.neg;
 	
-	@op("++x", false) inline static public function inc(a:Int64):Int64
+	@op("++", false) inline static public function inc(a:Int64):Int64
 	{
 		return Int64.add(a, Int64.ofInt(1));
 	}
@@ -156,7 +156,7 @@ class Int64Math
 		return Int64.add(a, Int64.ofInt(1));
 	}
 	
-	@op("--x", false) inline static public function dec(a:Int64):Int64
+	@op("--", false) inline static public function dec(a:Int64):Int64
 	{
 		return Int64.sub(a, Int64.ofInt(1));
 	}
