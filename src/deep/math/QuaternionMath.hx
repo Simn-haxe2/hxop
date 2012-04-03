@@ -9,7 +9,7 @@ class QuaternionMath
 {
 	// basic arithmetic
 	
-	@op('+', true) inline static public function add(lhs:Quaternion, rhs:Quaternion)
+	@op('+') inline static public function add(lhs:Quaternion, rhs:Quaternion)
 	{
 		return new Quaternion(lhs.x + rhs.x,
 			lhs.y + rhs.y,
@@ -17,7 +17,7 @@ class QuaternionMath
 			lhs.w + rhs.w);
 	}
 	
-	@op('-', true) inline static public function sub(lhs:Quaternion, rhs:Quaternion)
+	@op('-') inline static public function sub(lhs:Quaternion, rhs:Quaternion)
 	{
 		return new Quaternion(lhs.x - rhs.x,
 			lhs.y - rhs.y,
@@ -25,7 +25,7 @@ class QuaternionMath
 			lhs.w - rhs.w);
 	}
 
-	@op('*', true) inline static public function mul(lhs:Quaternion, rhs:Quaternion)
+	@op('*') inline static public function mul(lhs:Quaternion, rhs:Quaternion)
 	{
 		return new Quaternion(
 			rhs.x * lhs.w + rhs.w * lhs.x + rhs.z * lhs.y - rhs.y * lhs.z,
@@ -37,7 +37,7 @@ class QuaternionMath
 	
 	// arithmetic assignment versions
 	
-	@op('+=', true) inline static public function addAssign(lhs:Quaternion, rhs:Quaternion)
+	@op('+=') inline static public function addAssign(lhs:Quaternion, rhs:Quaternion)
 	{
 		lhs.x += rhs.x;
 		lhs.y += rhs.y;
@@ -46,7 +46,7 @@ class QuaternionMath
 		return lhs;
 	}
 	
-	@op('-=', true) inline static public function subAssign(lhs:Quaternion, rhs:Quaternion)
+	@op('-=') inline static public function subAssign(lhs:Quaternion, rhs:Quaternion)
 	{
 		lhs.x -= rhs.x;
 		lhs.y -= rhs.y;
@@ -55,7 +55,7 @@ class QuaternionMath
 		return lhs;
 	}	
 
-	@op('*=', true) inline static public function mulAssign(lhs:Quaternion, rhs:Quaternion)
+	@op('*=') inline static public function mulAssign(lhs:Quaternion, rhs:Quaternion)
 	{
 		lhs.x = rhs.x * lhs.w + rhs.w * lhs.x + rhs.z * lhs.y - rhs.y * lhs.z;
 		lhs.y = rhs.y * lhs.w + rhs.w * lhs.y + rhs.x * lhs.z - rhs.z * lhs.x;

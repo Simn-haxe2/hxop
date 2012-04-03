@@ -5,13 +5,9 @@ import haxe.macro.Expr;
 import haxe.macro.Type;
 
 import tink.core.types.Option;
-import tink.core.types.Outcome;
 import tink.macro.build.MemberTransformer;
-import tink.macro.tools.Printer;
 
-using tink.macro.tools.TypeTools;
-using tink.macro.tools.ExprTools;
-using tink.macro.tools.MetadataTools;
+using tink.macro.tools.MacroTools;
 using tink.core.types.Outcome;
 
 typedef UnopFunc = {
@@ -70,7 +66,6 @@ class OverloadOperator
 					for (arg in func.args)
 						innerCtx.push( { name:arg.name, type:arg.type, expr: null } );					
 					func.expr = transform(func.expr, innerCtx);
-					//trace(func.expr.toString());
 				case FVar(t, e):
 					var innerCtx = env.copy();
 					if (e != null)
@@ -103,7 +98,6 @@ class OverloadOperator
 							e;
 						case Some(opFunc):
 							assign ? lhs.assign(opFunc) : opFunc;
-							
 					}
 				case EUnop(op, pf, e): // TODO: postfix
 					e = transform(e, ctx);
@@ -122,7 +116,7 @@ class OverloadOperator
 	
 	static function findBinop(op:Binop, lhs:Expr, rhs:Expr, isAssign:Bool, ctx:IdentDef, p, ?commutative = true)
 	{
-		var opString = Printer.binoperator(op) + (isAssign ? "=" : "");
+		var opString = tink.macro.tools.Printer.binoperator(op) + (isAssign ? "=" : "");
 
 		if (!binops.exists(opString))
 			return None;
@@ -164,7 +158,7 @@ class OverloadOperator
 	
 	static function findUnop(op:Unop, lhs:Expr, ctx:IdentDef, p)
 	{
-		var opString = Printer.unoperator(op);
+		var opString = tink.macro.tools.Printer.unoperator(op);
 		if (!unops.exists(opString))
 			return None;
 		
@@ -244,7 +238,6 @@ class OverloadOperator
 					continue;
 				}
 				
-				
 				if (args.length == 1)
 				{
 					if (!unops.exists(operator))
@@ -257,6 +250,11 @@ class OverloadOperator
 				}
 				else
 				{
+					if (commutative && args[0].t.isSubTypeOf(args[1].t).isSuccess())
+					{
+						//Context.warning("Found commutative definition, but types are equal.", field.pos);
+						commutative = false;
+					}
 					if (!binops.exists(operator))
 						binops.set(operator, []);
 					binops.get(operator).push( {

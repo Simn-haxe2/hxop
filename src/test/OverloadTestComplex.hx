@@ -47,7 +47,7 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 		
 
 	}
-	
+
 	function test1()
 	{
 		var c1 = new Complex(2, 3);
@@ -59,7 +59,6 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 		assertTrue(ComplexMath.eq(c3, new Complex( -2, 4)));
 	}
 	
-
 	function test2()
 	{
 		var c:Complex;
@@ -161,7 +160,7 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 		a[2] = a[0] * a[1];
 		assertTrue(a[2] == ComplexMath.mult(a[0], a[1]));
 	}
-
+	
 	function test8()
 	{
 		var a:A = new A();
@@ -225,7 +224,6 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 	function test10()
 	{
 		var a = [new Complex(0, 1), new Complex(1, 1), new Complex(-1, 3)];
-		print(a.length);
 		var s = new Complex();
 		
 		for (c in Lambda.list(a))
@@ -238,7 +236,6 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 
 	static inline var z:Complex = new Complex(0, 1) + new Complex(1, 0);
 	
-
 	function test11()
 	{
 		assertTrue(z == new Complex(1, 1));
@@ -248,7 +245,6 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 	{
 		return a == b;
 	}
-	
 	
 	function test12()
 	{
