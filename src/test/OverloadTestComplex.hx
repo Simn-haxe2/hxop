@@ -44,8 +44,6 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 	public function new() 
 	{
 		super();
-		
-
 	}
 
 	function test1()
@@ -175,7 +173,6 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 
 	function test9()
 	{
-		
 		try
 		{
 			throw new Complex(1, 2);
@@ -274,7 +271,7 @@ class OverloadTestComplex extends TestCase, implements IOverloadOperator<Complex
 		assertEquals(1.0, c.re);
 		assertEquals(1.0, c.im);
 	}
-
+	
 	function test14()
 	{
 		var l = function(e)

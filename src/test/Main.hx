@@ -2,10 +2,6 @@ package test;
 
 import haxe.unit.TestRunner;
 
-/**
- * ...
- * @author deep <system.grand@gmail.com>
- */
 class Main
 {
 	 static public function main() 
@@ -15,6 +11,7 @@ class Main
 		r.add(new OverloadTestQuaternion());
 		r.add(new OverloadTestInt32());
 		r.add(new OverloadTestInt64());
+		r.add(new OverloadTestHxs());
 		r.run();
 	}
 }

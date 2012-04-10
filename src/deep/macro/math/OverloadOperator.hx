@@ -24,6 +24,7 @@ typedef BinopFunc = {
 
 typedef IdentDef = Array<{ name : String, type : Null<ComplexType>, expr : Null<Expr> }>; 
 
+
 class OverloadOperator 
 {
 	static public var binops:Hash<Array<BinopFunc>> = new Hash();
@@ -38,6 +39,9 @@ class OverloadOperator
 	{
 		var env = [];
 		
+		if (ctx.cls.superClass != null)
+			getMembers(ctx.cls.superClass.t.get(), env);
+			
 		for (field in ctx.members)
 		{
 			switch(field.kind)
@@ -139,15 +143,16 @@ class OverloadOperator
 
 			switch(t1.isSubTypeOf(opFunc.lhs))
 			{
-				case Failure(s): continue;
+				case Failure(_): continue;
 				default:
 			}
+
 			switch(t2.isSubTypeOf(opFunc.rhs))
 			{
-				case Failure(s): continue;
+				case Failure(_): continue;
 				default:
 			}	
-			
+
 			return Some(opFunc.field.call([lhs, rhs]));
 		}
 		if (commutative)
@@ -181,6 +186,14 @@ class OverloadOperator
 		return None;
 	}	
 	
+	static function getMembers(cls:ClassType, ctx:IdentDef)
+	{
+		for (field in cls.fields.get())
+			ctx.push( { name:field.name, type:null, expr: null } ); // TODO: this might be dirty
+		if (cls.superClass != null)
+			getMembers(cls.superClass.t.get(), ctx);
+	}
+	
 	static function getMathType(ctx:ClassBuildContext)
 	{
 		var type = getDataType(ctx.cls).reduce();
@@ -191,7 +204,7 @@ class OverloadOperator
 			case Failure(e):
 				Context.error(e, Context.currentPos());
 		}
-		
+
 		for (field in fields)
 		{
 			if (!field.meta.has("op"))
@@ -232,6 +245,7 @@ class OverloadOperator
 						Context.warning("Only functions can be used as operators.", field.pos);
 						continue;						
 				};
+				
 				if (args.length > 2 || args.length == 0)
 				{
 					Context.warning("Only unary and binary operators are supported.", field.pos);
@@ -255,17 +269,42 @@ class OverloadOperator
 						//Context.warning("Found commutative definition, but types are equal.", field.pos);
 						commutative = false;
 					}
+
 					if (!binops.exists(operator))
 						binops.set(operator, []);
 					binops.get(operator).push( {
 						operator: operator,
-						lhs: args[0].t,
+						lhs: monofy(args[0].t),
 						field: type.getID().resolve().field(field.name),
-						rhs: args[1].t,
+						rhs: monofy(args[1].t),
 						commutative: commutative
 					});
 				}
 			}
+		}
+	}
+	
+	static function monofy(t:Type)
+	{
+		return switch(t)
+		{
+			case TInst(cl, params):
+				if (cl.get().kind == KTypeParameter)
+					TPath({ name: "Dynamic", pack: [], params: [], sub: null }).toType().sure();
+				else
+				{
+					var newParams = [];
+					for (param in params)
+						newParams.push(monofy(param));
+					TInst(cl, newParams);
+				}
+			case TFun(args, ret):
+				var newArgs = [];
+				for (arg in args)
+					newArgs.push( { name:arg.name, opt:arg.opt, t:monofy(arg.t) } );
+				TFun(newArgs, monofy(ret));
+			default:
+				t;
 		}
 	}
 	
