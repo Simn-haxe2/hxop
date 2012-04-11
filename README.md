@@ -24,7 +24,9 @@ Defining and using operators
 You create your own operators by defining a class with static fields annotated by @op("operator"). As a non-mathematical example, assume that you have a class Signal that dispatches events to registered listeners. You like C#'s += operator, so you want to mimic this in haxe:
 
 * SignalMath.hx
+
 ```
+
 class SignalMath
 {
 	@op("+=") static public function add(lhs:Signal, rhs:Void->Void)
@@ -33,11 +35,15 @@ class SignalMath
 		return lhs;
 	}
 }
+
 ```
+
 With just that you can start using your += operator like so:
 
 * Main.hx
+
 ```
+
 class Main implements opover.IOverloadOperator<SignalMath>
 {
 	static public function main()
@@ -50,7 +56,9 @@ class Main implements opover.IOverloadOperator<SignalMath>
 		s1.dispatch();
 	}
 }
+
 ```
+
 Remarks
 -------
 
