@@ -53,4 +53,17 @@ class TestReflection extends TestCase, implements IOverloadOperator<ReflectionMa
 		function() { return o; } ()["i"] += 2;
 		assertEquals(8, o.i);
 	}
+	
+	public function testUnary()
+	{
+		var o = { i:9 };
+		o["i"]++;
+		assertEquals(10, o.i);
+		++o["i"];
+		assertEquals(11, o.i);
+		o["i"]--;
+		assertEquals(10, o.i);
+		--o["i"];
+		assertEquals(9, o.i);
+	}
 }

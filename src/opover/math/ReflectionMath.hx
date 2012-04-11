@@ -47,5 +47,15 @@ class ReflectionMath
 	@op("/=") @noAssign static public inline function assignDiv(lhs:ReflectionFunc, rhs:Dynamic):Dynamic
 	{
 		return lhs( lhs() / rhs );
+	}
+	
+	@op("++") @noAssign static public inline function inc(lhs:ReflectionFunc):Dynamic
+	{
+		return lhs(lhs() + 1);
+	}
+	
+	@op("--") @noAssign static public inline function dec(lhs:ReflectionFunc):Dynamic
+	{
+		return lhs(lhs() - 1);
 	}	
 }

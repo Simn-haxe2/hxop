@@ -19,14 +19,14 @@ enum Binop
 typedef UnopFunc = {
 	operator: String,
 	lhs: Type,
-	field: Expr
+	field: Expr,
+	noAssign: Bool
 };
 
 typedef BinopFunc = {
 	> UnopFunc,
 	rhs: Type,
-	commutative: Bool,
-	noAssign: Bool
+	commutative: Bool
 }
 
 typedef IdentDef = Array<{ name : String, type : Null<ComplexType>, expr : Null<Expr> }>; 
@@ -119,13 +119,14 @@ class OverloadOperator
 							info.assign && !opFunc.noAssign ? lhs.assign(opFunc.func) : opFunc.func;
 					}
 				case EUnop(op, pf, e): // TODO: postfix
-					e = transform(e, ctx);
+					var assign = (op == OpIncrement || op == OpDecrement);
+					e = transform(e, ctx, assign);
 					switch(findUnop(op, e, ctx, e.pos))
 					{
 						case None:
 							e;
 						case Some(opFunc):
-							(op == OpIncrement || op == OpDecrement) ? e.assign(opFunc) : opFunc;
+							assign && !opFunc.noAssign ? e.assign(opFunc.func) : opFunc.func;
 					}
 				default:
 					e;
@@ -202,8 +203,8 @@ class OverloadOperator
 				case Failure(s): continue;
 				default:
 			}
-
-			return Some(opFunc.field.call([lhs]));
+			if (t1.isDynamic() && !opFunc.lhs.isDynamic()) continue;
+			return Some({noAssign:opFunc.noAssign, func:opFunc.field.call([lhs]) });
 		}
 		return None;
 	}	
@@ -281,7 +282,8 @@ class OverloadOperator
 					unops.get(operator).push( {
 						operator: operator,
 						lhs: args[0].t,
-						field: type.getID().resolve().field(field.name)
+						field: type.getID().resolve().field(field.name),
+						noAssign: field.meta.has("noAssign")
 					});
 				}
 				else
