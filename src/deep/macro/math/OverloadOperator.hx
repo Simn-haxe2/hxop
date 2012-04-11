@@ -10,20 +10,26 @@ import tink.macro.build.MemberTransformer;
 using tink.macro.tools.MacroTools;
 using tink.core.types.Outcome;
 
+enum Binop
+{
+	Binop(op:haxe.macro.Expr.Binop);
+	OpArray;
+}
+
 typedef UnopFunc = {
 	operator: String,
-	lhs:Type,
-	field:Expr
+	lhs: Type,
+	field: Expr
 };
 
 typedef BinopFunc = {
 	> UnopFunc,
 	rhs: Type,
-	commutative:Bool
+	commutative: Bool,
+	noAssign: Bool
 }
 
 typedef IdentDef = Array<{ name : String, type : Null<ComplexType>, expr : Null<Expr> }>; 
-
 
 class OverloadOperator 
 {
@@ -79,29 +85,38 @@ class OverloadOperator
 		}
 	}
 
-	static function transform(expr:Expr, initCtx:IdentDef)
+	static function transform(expr:Expr, initCtx:IdentDef, lValue = false)
 	{
 		return expr.map(function(e, ctx)
 		{
 			return switch(e.expr)
 			{
-				case EBinop(op, lhs, rhs):
-					var assign = switch(op)
-					{
-						case OpAssignOp(op2):
-							op = op2;
-							true;
-						default:
-							false;
-					}
-					lhs = transform(lhs, ctx);
+				case EArray(lhs, rhs):
+					lhs = transform(lhs, ctx, lValue);
 					rhs = transform(rhs, ctx);
-					switch(findBinop(op, lhs, rhs, assign, ctx, e.pos))
+					switch(findBinop(OpArray, lhs, rhs, lValue, ctx, e.pos))
 					{
 						case None:
 							e;
 						case Some(opFunc):
-							assign ? lhs.assign(opFunc) : opFunc;
+							lValue && !opFunc.noAssign ? lhs.assign(opFunc.func) : opFunc.func;
+					}					
+				case EBinop(op, lhs, rhs):
+					var info = switch(op)
+					{
+						case OpAssignOp(op2):
+							{ op:op2, assign: true };
+						default:
+							{ op:op, assign: false };
+					}
+					lhs = transform(lhs, ctx, info.assign || info.op == OpAssign);
+					rhs = transform(rhs, ctx);
+					switch(findBinop(Binop(info.op), lhs, rhs, info.assign, ctx, e.pos))
+					{
+						case None:
+							e;
+						case Some(opFunc):
+							info.assign && !opFunc.noAssign ? lhs.assign(opFunc.func) : opFunc.func;
 					}
 				case EUnop(op, pf, e): // TODO: postfix
 					e = transform(e, ctx);
@@ -120,7 +135,11 @@ class OverloadOperator
 	
 	static function findBinop(op:Binop, lhs:Expr, rhs:Expr, isAssign:Bool, ctx:IdentDef, p, ?commutative = true)
 	{
-		var opString = tink.macro.tools.Printer.binoperator(op) + (isAssign ? "=" : "");
+		var opString = (switch(op)
+		{
+			case Binop(op): tink.macro.tools.Printer.binoperator(op);
+			case OpArray: "[]";
+		}) + (isAssign ? "=" : "");
 
 		if (!binops.exists(opString))
 			return None;
@@ -130,12 +149,13 @@ class OverloadOperator
 			case Success(t): Context.follow(t);
 			case Failure(f): Context.error("Could not determine type: " +f + " | " +lhs.toString(), p);
 		}
+		
 		var t2 = switch(rhs.typeof(ctx))
 		{
 			case Success(t): Context.follow(t);
 			case Failure(f): Context.error("Could not determine type: " +f, p);
 		}
-
+		
 		for (opFunc in binops.get(opString))
 		{
 			if (!commutative && !opFunc.commutative)
@@ -146,14 +166,16 @@ class OverloadOperator
 				case Failure(_): continue;
 				default:
 			}
-
+			if (t1.isDynamic() && !opFunc.lhs.isDynamic()) continue;
+			
 			switch(t2.isSubTypeOf(opFunc.rhs))
 			{
 				case Failure(_): continue;
 				default:
 			}	
+			if (t2.isDynamic() && !opFunc.rhs.isDynamic()) continue;
 
-			return Some(opFunc.field.call([lhs, rhs]));
+			return Some({noAssign:opFunc.noAssign, func:opFunc.field.call([lhs, rhs])});
 		}
 		if (commutative)
 			return findBinop(op, rhs, lhs, isAssign, ctx, p, false);
@@ -277,7 +299,8 @@ class OverloadOperator
 						lhs: monofy(args[0].t),
 						field: type.getID().resolve().field(field.name),
 						rhs: monofy(args[1].t),
-						commutative: commutative
+						commutative: commutative,
+						noAssign: field.meta.has("noAssign")
 					});
 				}
 			}

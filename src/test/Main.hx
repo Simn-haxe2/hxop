@@ -12,6 +12,7 @@ class Main
 		r.add(new OverloadTestInt32());
 		r.add(new OverloadTestInt64());
 		r.add(new OverloadTestHxs());
+		r.add(new OverloadTestReflection());
 		r.run();
 	}
 }
