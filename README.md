@@ -24,7 +24,7 @@ Defining and using operators
 You create your own operators by defining a class with static fields annotated by @op("operator"). As a non-mathematical example, assume that you have a class Signal that dispatches events to registered listeners. You like C#'s += operator, so you want to mimic this in haxe:
 
 * SignalMath.hx
-
+```
 class SignalMath
 {
 	@op("+=") static public function add(lhs:Signal, rhs:Void->Void)
@@ -33,11 +33,11 @@ class SignalMath
 		return lhs;
 	}
 }
-
+```
 With just that you can start using your += operator like so:
 
 * Main.hx
-
+```
 class Main implements opover.IOverloadOperator<SignalMath>
 {
 	static public function main()
@@ -50,10 +50,10 @@ class Main implements opover.IOverloadOperator<SignalMath>
 		s1.dispatch();
 	}
 }
-
+```
 Remarks
 -------
 
-* @op accepts a second argument of type Bool, which defaults to false and defines if an operator is commutative. For example, if you define an operator + that adds Float and Point, you likely want to allow this on both (Float + Point) and (Point + Float), so you would set this argument to true. Note that this only makes sense if your operands are of different types.
-* If you have a situation where you want to disable overloading for a specific function of a class implementing IOperatorOverload, you can annotate it with @noOverload.
-* Usually, assignment operators such as += and *= generate an assignment of their return value to the left hand side argument. If you wish to disable it for certain operators, you can add the @noAssign metadata.
+* `@op` accepts a second argument of type `Bool`, which defaults to false and defines if an operator is commutative. For example, if you define an operator + that adds `Float` and `Point`, you likely want to allow this on both `(Float + Point)` and `(Point + Float)`, so you would set this argument to true. Note that this only makes sense if your operands are of different types.
+* If you have a situation where you want to disable overloading for a specific function of a class implementing `IOperatorOverload`, you can annotate it with `@noOverload`.
+* Usually, assignment operators such as += and *= generate an assignment of their return value to the left hand side argument. If you wish to disable it for certain operators, you can add the `@noAssign` metadata.
