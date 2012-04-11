@@ -192,12 +192,14 @@ class OverloadOperator
 					case TFun(args, ret):
 						if (operator == "new")
 						{
-							operatorManager.addUnop({
-								prefix: true,
-								postfix: false,
+							var tArgs = [];
+							for (arg in args)
+								tArgs.push( { name:arg.name, opt:arg.opt, t:monofy(arg.t) } );
+							operatorManager.addNew({
 								operator: "new",
 								lhs: monofy(ret.reduce()),
 								field: type.getID().resolve().field(field.name),
+								args: tArgs,
 								noAssign: false
 							});	
 							continue;

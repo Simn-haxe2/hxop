@@ -34,4 +34,9 @@ typedef BinopFunc = {
 	commutative: Bool
 }
 
+typedef NewFunc = {
+	> BaseFunc,
+	args: Array<{t:Type, opt:Bool, name:String}>
+}
+
 typedef IdentDef = Array<{ name : String, type : Null<ComplexType>, expr : Null<Expr> }>; 

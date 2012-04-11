@@ -49,10 +49,12 @@ class TestNew extends TestCase, implements IOverloadOperator<MyClass>
 		assertEquals(13, c2.b);
 		assertEquals(1, MyClass.numNewCalled);
 		
-		var list = new List<Int>([1, 2, 3]);
+		var list = new List([1, 2, 3]);
 		assertEquals(1, list.pop());
 		assertEquals(2, list.pop());
 		assertEquals(3, list.pop());
+		
+		var l = new List();
 	}
 }
 #end

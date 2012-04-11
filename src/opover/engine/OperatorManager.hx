@@ -10,16 +10,19 @@ import opover.engine.Types;
 
 using tink.macro.tools.TypeTools;
 using tink.macro.tools.ExprTools;
+using tink.core.types.Outcome;
 
 class OperatorManager 
 {
 	var binops:Hash<Array<BinopFunc>>;
 	var unops:Hash<Array<UnopFunc>>;
+	var news:Array<NewFunc>;
 		
 	public function new()
 	{
 		unops = new Hash();
 		binops = new Hash();
+		news = [];
 	}
 	
 	public function addBinop(op:BinopFunc)
@@ -34,6 +37,11 @@ class OperatorManager
 		if (!unops.exists(op.operator))
 			unops.set(op.operator, []);
 		unops.get(op.operator).push(op);
+	}
+	
+	public function addNew(op:NewFunc)
+	{
+		news.push(op);
 	}
 	
 	public function findBinop(op:BinopExt, lhs:Expr, rhs:Expr, isAssign:Bool, ctx:IdentDef, p, ?commutative = true)
@@ -118,23 +126,43 @@ class OperatorManager
 		return None;
 	}
 	
-	public function findNew(tp:TypePath, args, ctx, p)
+	public function findNew(tp:TypePath, args:Array<Expr>, ctx, p)
 	{
-		if (!unops.exists("new"))
-			return None;
-			
 		var t1 = switch(TPath(tp).toType())
 		{
 			case Success(t): t;
-			case Failure(f): Context.error("Could not determine type: " +f + " | " +tp, p);
+			case Failure(f):
+				try {
+					Context.getType(tp.pack.join(".") + (tp.pack.length > 0 ? "." : "") + tp.name);
+				} catch (e:Dynamic)
+				{
+					Context.error("Could not determine type: " +f + " | " +tp, p);
+				}
 		}
 		
-		for (opFunc in unops.get("new"))
+		for (opFunc in news)
 		{
 			switch(t1.isSubTypeOf(opFunc.lhs))
 			{
 				case Failure(s): continue;
 				default:
+			}
+			
+			if (opFunc.args.length != args.length) continue;
+			
+			try
+			{
+				for (i in 0...opFunc.args.length)
+				{
+					switch(args[i].typeof(ctx).sure().isSubTypeOf(opFunc.args[i].t))
+					{
+						case Failure(a): throw "No subtype";
+						case Success(_):
+					}
+				}
+			} catch (e:Dynamic)
+			{
+				continue;
 			}
 			return Some(opFunc.field.call(args));
 		}
