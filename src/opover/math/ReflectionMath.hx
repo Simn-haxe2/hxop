@@ -26,7 +26,7 @@ class ReflectionMath
 		return callback(ReflectionMath.access, base, access);
 	}
 		
-	@op("=") static public inline function assign(lhs:ReflectionValue, rhs:Dynamic):Dynamic
+	@op("=") static public inline function assign(lhs:ReflectionFunc, rhs:Dynamic):Dynamic
 	{
 		return lhs( rhs );
 	}

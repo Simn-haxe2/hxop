@@ -89,7 +89,7 @@ class OverloadOperator
 	{
 		return expr.map(function(e, ctx)
 		{
-			return switch(e.expr)
+			var e = switch(e.expr)
 			{
 				case EArray(lhs, rhs):
 					lhs = transform(lhs, ctx, lValue);
@@ -130,7 +130,9 @@ class OverloadOperator
 					}
 				default:
 					e;
-			}
+			};
+			lValue = false;
+			return e;
 		}, initCtx);
 	}
 	

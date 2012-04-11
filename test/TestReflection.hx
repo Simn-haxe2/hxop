@@ -28,6 +28,9 @@ class TestReflection extends TestCase, implements IOverloadOperator<ReflectionMa
 		assertEquals(11, o.i);
 		assertEquals(11, o.j);
 		assertEquals(22, o["i"] + o["i"]);
+		
+		assertEquals(11, function() { [0];  return o; } ()["j"]);
+		assertEquals("bar", ( { [0]; { foo:"bar" }; } )["foo"]);
 	}
 	
 	public function testOperators()
@@ -43,15 +46,11 @@ class TestReflection extends TestCase, implements IOverloadOperator<ReflectionMa
 
 	public function testLValueCases()
 	{
-		var o = { i: 9 };
-		(o["i"]) = 2;
-		assertEquals(2, o.i);
-		( { o["i"]; } ) += 2;
-		assertEquals(4, o.i);
+		var o = { i: 7 };
 		( { o; } )["i"] += 2;
-		assertEquals(6, o.i);
+		assertEquals(9, o.i);
 		function() { return o; } ()["i"] += 2;
-		assertEquals(8, o.i);
+		assertEquals(11, o.i);
 		function() { return o; } ()["i"] = 2;
 		assertEquals(2, o.i);		
 	}
