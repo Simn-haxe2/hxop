@@ -5,16 +5,18 @@ typedef ReflectionFunc = ?ReflectionValue -> ReflectionValue;
 
 class ReflectionMath
 {
-	static function access(base:Dynamic, access:String, ?value:Dynamic)
+	static inline function access(base:Dynamic, access:String, ?value:Dynamic)
 	{
 		if (value == null)
 			return Reflect.field(base, access);
 		else
+		{
 			Reflect.setField(base, access, value);
 			return value;
+		}
 	}
 	
-	@op("[]") static public function read(base:Dynamic, access:String):Dynamic
+	@op("[]") static public inline function read(base:Dynamic, access:String):Dynamic
 	{
 		return Reflect.field(base, access);
 	}
