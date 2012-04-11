@@ -1,0 +1,41 @@
+build_base.hxml
+-cp src
+-cp test
+-main TestMain
+-neko bin/neko.n
+
+--next
+build_base.hxml
+-cp src
+-cp test
+-main TestMain
+-swf bin/swf9.swf
+
+--next
+build_base.hxml
+-cp src
+-cp test
+-main TestMain
+-swf-version 8
+-swf bin/swf8.swf
+
+--next
+build_base.hxml
+-cp src
+-cp test
+-main TestMain
+-php bin/php
+
+--next
+build_base.hxml
+-cp src
+-cp test
+-main TestMain
+-js bin/js.js
+
+--next
+build_base.hxml
+-cp src
+-cp test
+-main TestMain
+-cpp bin/cpp

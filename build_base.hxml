@@ -1,0 +1,3 @@
+-D haxe_209
+-cp ../tinkerbell/src
+-lib hxs

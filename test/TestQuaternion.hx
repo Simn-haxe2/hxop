@@ -1,7 +1,6 @@
-package test;
-import deep.math.QuaternionMath;
-import deep.math.Quaternion;
-import deep.macro.math.IOverloadOperator;
+import opover.math.QuaternionMath;
+import opover.math.Quaternion;
+import opover.IOverloadOperator;
 import haxe.unit.TestCase;
 
 /**
@@ -14,7 +13,7 @@ enum Bla
 	Qua(q:Quaternion);
 }
  
-class OverloadTestQuaternion extends TestCase, implements IOverloadOperator<QuaternionMath>
+class TestQuaternion extends TestCase, implements IOverloadOperator<QuaternionMath>
 {	
 
 	public function testGetNorm()

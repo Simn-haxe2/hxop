@@ -1,11 +1,4 @@
-package deep.math;
-
-import deep.macro.math.IOverloadOperator;
-
-/**
- * ...
- * @author Simon Krajewski
- */
+package opover.math;
 
 class Quaternion
 {

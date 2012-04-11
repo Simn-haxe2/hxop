@@ -1,4 +1,4 @@
-package deep.macro.math;
+package opover.engine;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -243,7 +243,7 @@ class OverloadOperator
 						continue;
 				}
 
-				var commutative = meta.length == 1 ? true : switch(meta[1].getIdent())
+				var commutative = meta.length == 1 ? false : switch(meta[1].getIdent())
 				{
 					case Success(b):
 						switch(b)
@@ -288,7 +288,7 @@ class OverloadOperator
 				{
 					if (commutative && args[0].t.isSubTypeOf(args[1].t).isSuccess())
 					{
-						//Context.warning("Found commutative definition, but types are equal.", field.pos);
+						Context.warning("Found commutative definition, but types are equal.", field.pos);
 						commutative = false;
 					}
 

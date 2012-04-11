@@ -1,12 +1,10 @@
-package test;
-
-import deep.macro.math.IOverloadOperator;
-import deep.math.HxsMath;
+import opover.IOverloadOperator;
+import opover.math.HxsMath;
 import haxe.unit.TestCase;
 import hxs.Signal;
 import hxs.Signal1;
 
-class OverloadTestHxs extends TestCase, implements IOverloadOperator<HxsMath>
+class TestHxs extends TestCase, implements IOverloadOperator<HxsMath>
 {
 	public function testArg0()
 	{

@@ -1,9 +1,4 @@
-package deep.math;
-
-/**
- * ...
- * @author Simon Krajewski
- */
+package opover.math;
 
 class QuaternionMath
 {
@@ -78,7 +73,7 @@ class QuaternionMath
 		
 	// rotation
 	
-	@op('<<', true) inline static public function rotate(point:Quaternion, rotation:Quaternion)
+	@op('<<') inline static public function rotate(point:Quaternion, rotation:Quaternion)
 	{
 		return mul(mul(rotation, point), conjugate(rotation));
 	}
@@ -117,12 +112,12 @@ class QuaternionMath
 	
 	// comparison
 	
-	@op("==", true) inline static public function equals(lhs:Quaternion, rhs:Quaternion)
+	@op("==") inline static public function equals(lhs:Quaternion, rhs:Quaternion)
 	{
 		return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z && lhs.w == rhs.w;
 	}
 	
-	@op("!=", true) inline static public function notEquals(lhs:Quaternion, rhs:Quaternion)
+	@op("!=") inline static public function notEquals(lhs:Quaternion, rhs:Quaternion)
 	{
 		return lhs.x != rhs.x || lhs.y != rhs.y || lhs.z != rhs.z || lhs.w != rhs.w;
 	}	

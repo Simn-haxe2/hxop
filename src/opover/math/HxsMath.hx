@@ -1,11 +1,6 @@
-package deep.math;
+package opover.math;
 import hxs.Signal;
 import hxs.Signal1;
-
-/**
- * ...
- * @author Simon Krajewski
- */
 
 class HxsMath
 {

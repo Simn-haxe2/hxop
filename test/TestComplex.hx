@@ -1,7 +1,6 @@
-package test;
-import deep.macro.math.IOverloadOperator;
-import deep.math.Complex;
-import deep.math.ComplexMath;
+import opover.IOverloadOperator;
+import opover.math.Complex;
+import opover.math.ComplexMath;
 import haxe.unit.TestCase;
 
 /**
@@ -38,7 +37,7 @@ class ComplexChild extends Complex
 	
 }
 
-class OverloadTestComplex extends TestCase, implements IOverloadOperator<ComplexMath>
+class TestComplex extends TestCase, implements IOverloadOperator<ComplexMath>
 {
 
 	public function new() 

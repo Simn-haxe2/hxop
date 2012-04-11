@@ -1,4 +1,4 @@
-package deep.math;
+package opover.math;
 import nme.geom.Point;
 
 /**

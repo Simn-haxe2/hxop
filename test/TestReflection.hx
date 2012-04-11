@@ -1,10 +1,8 @@
-package test;
-
-import deep.macro.math.IOverloadOperator;
-import deep.math.ReflectionMath;
+import opover.IOverloadOperator;
+import opover.math.ReflectionMath;
 import haxe.unit.TestCase;
 
-class OverloadTestReflection extends TestCase, implements IOverloadOperator<ReflectionMath>
+class TestReflection extends TestCase, implements IOverloadOperator<ReflectionMath>
 {
 	public function testBasic()
 	{
@@ -29,7 +27,6 @@ class OverloadTestReflection extends TestCase, implements IOverloadOperator<Refl
 		o["j"] = o["i"] += 1;
 		assertEquals(11, o.i);
 		assertEquals(11, o.j);
-		
 		assertEquals(22, o["i"] + o["i"]);
 	}
 	

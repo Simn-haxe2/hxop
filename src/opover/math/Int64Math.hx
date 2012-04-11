@@ -1,4 +1,4 @@
-package deep.math;
+package opover.math;
 import haxe.Int32;
 import haxe.Int64;
 
@@ -10,7 +10,7 @@ import haxe.Int64;
 class Int64Math 
 {
 
-	@op("+", true) inline static public var add = Int64.add;
+	@op("+") inline static public var add = Int64.add;
 	
 	@op("+", true) inline static public function addInt32(a:Int64, b:Int32):Int64
 	{
@@ -22,7 +22,7 @@ class Int64Math
 		return Int64.add(a, Int64.ofInt(b));
 	}
 	
-	@op("-", true) inline static public var sub = Int64.sub;
+	@op("-") inline static public var sub = Int64.sub;
 	
 	@op("-", false) inline static public function subInt32(a:Int64, b:Int32):Int64
 	{
@@ -34,7 +34,7 @@ class Int64Math
 		return Int64.sub(a, Int64.ofInt(b));
 	}
 	
-	@op("*", true) inline static public var mult = Int64.mul;
+	@op("*") inline static public var mult = Int64.mul;
 	
 	@op("*", true) inline static public function multInt32(a:Int64, b:Int32):Int64
 	{
@@ -46,7 +46,7 @@ class Int64Math
 		return Int64.mul(a, Int64.ofInt(b));
 	}
 	
-	@op("/", true) inline static public var div = Int64.div;
+	@op("/") inline static public var div = Int64.div;
 	
 	@op("/", false) inline static public function divInt32(a:Int64, b:Int32):Int64
 	{
@@ -58,7 +58,7 @@ class Int64Math
 		return Int64.div(a, Int64.ofInt(b));
 	}
 	
-	@op("%", true) inline static public var mod = Int64.mod;
+	@op("%") inline static public var mod = Int64.mod;
 	
 	@op("%", false) inline static public function modInt32(a:Int64, b:Int32):Int64
 	{
@@ -70,7 +70,7 @@ class Int64Math
 		return Int64.mod(a, Int64.ofInt(b));
 	}
 	
-	@op("+=", true) inline static public var iadd = Int64.add;
+	@op("+=") inline static public var iadd = Int64.add;
 	
 	@op("+=", false) inline static public function iaddInt32(a:Int64, b:Int32):Int64
 	{
@@ -82,7 +82,7 @@ class Int64Math
 		return Int64.add(a, Int64.ofInt(b));
 	}
 	
-	@op("-=", true) inline static public var isub = Int64.sub;
+	@op("-=") inline static public var isub = Int64.sub;
 	
 	@op("-=", false) inline static public function isubInt32(a:Int64, b:Int32):Int64
 	{
@@ -94,7 +94,7 @@ class Int64Math
 		return Int64.sub(a, Int64.ofInt(b));
 	}
 	
-	@op("*=", true) inline static public var imult = Int64.mul;
+	@op("*=") inline static public var imult = Int64.mul;
 	
 	@op("*=", false) inline static public function imultInt32(a:Int64, b:Int32):Int64
 	{
@@ -106,7 +106,7 @@ class Int64Math
 		return Int64.mul(a, Int64.ofInt(b));
 	}
 	
-	@op("/=", true) inline static public var idiv = Int64.div;
+	@op("/=") inline static public var idiv = Int64.div;
 	
 	@op("/=", false) inline static public function idivInt32(a:Int64, b:Int32):Int64
 	{
@@ -118,7 +118,7 @@ class Int64Math
 		return Int64.div(a, Int64.ofInt(b));
 	}
 	
-	@op("%=", true) inline static public var imod = Int64.mod;
+	@op("%=") inline static public var imod = Int64.mod;
 	
 	@op("%=", false) inline static public function imodInt32(a:Int64, b:Int32):Int64
 	{
@@ -137,12 +137,12 @@ class Int64Math
 	@op(">>>", true) inline static public var ushr = Int64.ushr;
 	@op(">>>=", true) inline static public var iushr = Int64.ushr;
 	
-	@op("&", true) inline static public var and = Int64.and;
-	@op("&=", true) inline static public var iand = Int64.and;
-	@op("|", true) inline static public var or = Int64.or;
-	@op("|=", true) inline static public var ior = Int64.or;
-	@op("^", true) inline static public var xor = Int64.xor;
-	@op("^=", true) inline static public var ixor = Int64.xor;
+	@op("&") inline static public var and = Int64.and;
+	@op("&=") inline static public var iand = Int64.and;
+	@op("|") inline static public var or = Int64.or;
+	@op("|=") inline static public var ior = Int64.or;
+	@op("^") inline static public var xor = Int64.xor;
+	@op("^=") inline static public var ixor = Int64.xor;
 	
 	@op("-") inline static public var neg = Int64.neg;
 	
@@ -186,7 +186,7 @@ class Int64Math
 		return Int64.compare(a, b) <= 0;
 	}
 	
-	@op("==", true) inline static public function eq(a:Int64, b:Int64):Bool
+	@op("==") inline static public function eq(a:Int64, b:Int64):Bool
 	{
 		return Int64.compare(a, b) == 0;
 	}
@@ -201,7 +201,7 @@ class Int64Math
 		return Int64.compare(a, Int64.ofInt(b)) == 0;
 	}
 	
-	@op("!=", true) inline static public function neq(a:Int64, b:Int64):Bool
+	@op("!=") inline static public function neq(a:Int64, b:Int64):Bool
 	{
 		return Int64.compare(a, b) != 0;
 	}
