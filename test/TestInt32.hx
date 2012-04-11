@@ -44,12 +44,12 @@ class TestInt32 extends TestCase, implements IOverloadOperator<Int32Math>
 		assertTrue( -i2 >> 1 == -1500);
 		
 		i1 <<= 2;
-		assertEquals(Int32.ofInt(120), i1);
+		assertTrue(Int32.ofInt(120) == i1);
 		i1 >>= 2;
 		assertTrue(i1 == 30);
 		
 		i1++;
-		assertEquals(Int32.ofInt(31), i1);
+		assertTrue(Int32.ofInt(31) == i1);
 		--i1;
 		assertTrue(i1 == 30);
 		
@@ -63,6 +63,13 @@ class TestInt32 extends TestCase, implements IOverloadOperator<Int32Math>
 		assertTrue(i1 & i2 == 30 & 3000);
 		assertTrue(i1 | i2 == 30 | 3000);
 		assertTrue(i1 ^ i2 == 30 ^ 3000);
+		
+		var i3 = Int32.ofInt(6);
+		var i4 = i3++;
+		var i5 = ++i3;
+		assertTrue(i3 == 8);
+		assertTrue(i4 == 6);
+		assertTrue(i5 == 8);
 	}
 	
 }

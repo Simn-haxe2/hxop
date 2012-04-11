@@ -51,13 +51,27 @@ class ReflectionMath
 		return lhs( lhs() / rhs );
 	}
 	
-	@op("++") @noAssign static public inline function inc(lhs:ReflectionFunc):Dynamic
+	@op("++x") @noAssign static public inline function incPre(lhs:ReflectionFunc):Dynamic
 	{
 		return lhs(lhs() + 1);
 	}
 	
-	@op("--") @noAssign static public inline function dec(lhs:ReflectionFunc):Dynamic
+	@op("x++") @noAssign static public inline function incPost(lhs:ReflectionFunc):Dynamic
+	{
+		var old = lhs();
+		lhs(lhs() + 1);
+		return old;
+	}	
+	
+	@op("--x") @noAssign static public inline function decPre(lhs:ReflectionFunc):Dynamic
 	{
 		return lhs(lhs() - 1);
-	}	
+	}
+	
+	@op("x--") @noAssign static public inline function decPost(lhs:ReflectionFunc):Dynamic
+	{
+		var old = lhs();
+		lhs(lhs() - 1);
+		return old;
+	}		
 }

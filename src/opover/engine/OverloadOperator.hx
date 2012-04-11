@@ -16,15 +16,21 @@ enum Binop
 	OpArray;
 }
 
-typedef UnopFunc = {
+typedef BaseFunc = {
 	operator: String,
 	lhs: Type,
 	field: Expr,
 	noAssign: Bool
 };
 
+typedef UnopFunc = {
+	> BaseFunc,
+	prefix: Bool,
+	postfix: Bool,
+}
+
 typedef BinopFunc = {
-	> UnopFunc,
+	> BaseFunc,
 	rhs: Type,
 	commutative: Bool
 }
@@ -118,15 +124,25 @@ class OverloadOperator
 						case Some(opFunc):
 							info.assign && !opFunc.noAssign ? lhs.assign(opFunc.func) : opFunc.func;
 					}
-				case EUnop(op, pf, e): // TODO: postfix
+				case EUnop(op, postFix, lhs):
 					var assign = (op == OpIncrement || op == OpDecrement);
-					e = transform(e, ctx, assign);
-					switch(findUnop(op, e, ctx, e.pos))
+					lhs = transform(lhs, ctx, assign);
+					switch(findUnop(op, postFix, lhs, ctx, e.pos))
 					{
 						case None:
 							e;
 						case Some(opFunc):
-							assign && !opFunc.noAssign ? e.assign(opFunc.func) : opFunc.func;
+							if (!assign || opFunc.noAssign)
+								opFunc.func;
+							else if (!postFix)
+								lhs.assign(opFunc.func, lhs.pos);
+							else
+							{
+								[ "tmp".define(lhs, lhs.pos),
+								lhs.assign(opFunc.func, lhs.pos),
+								"tmp".resolve(lhs.pos)
+								].toBlock();
+							}
 					}
 				default:
 					e;
@@ -186,7 +202,7 @@ class OverloadOperator
 			return None;
 	}
 	
-	static function findUnop(op:Unop, lhs:Expr, ctx:IdentDef, p)
+	static function findUnop(op:Unop, postfix:Bool, lhs:Expr, ctx:IdentDef, p)
 	{
 		var opString = tink.macro.tools.Printer.unoperator(op);
 		if (!unops.exists(opString))
@@ -200,6 +216,8 @@ class OverloadOperator
 
 		for (opFunc in unops.get(opString))
 		{
+			if (postfix && !opFunc.postfix || !postfix && !opFunc.prefix) continue;
+			
 			switch(t1.isSubTypeOf(opFunc.lhs))
 			{
 				case Failure(s): continue;
@@ -276,16 +294,36 @@ class OverloadOperator
 					Context.warning("Only unary and binary operators are supported.", field.pos);
 					continue;
 				}
+					
+				var noAssign = field.meta.has("noAssign");
 				
 				if (args.length == 1)
 				{
+					if (noAssign && (operator == "--" || operator == "++"))
+						Context.error("Combination of @noAssign and " +operator + " is invalid, use x" +operator + " or " +operator + "x to define a postfix or prefix operation.", field.pos);
+						
+					var postfix = true;
+					var prefix = true;
+					if (operator.charAt(0) == "x")
+					{
+						prefix = false;
+						operator = operator.substr(1);
+					}
+					else if (operator.charAt(operator.length - 1) == "x")
+					{
+						postfix = false;
+						operator = operator.substr(0, -1);
+					}
+					
 					if (!unops.exists(operator))
 						unops.set(operator, []);
 					unops.get(operator).push( {
+						prefix: prefix,
+						postfix: postfix,
 						operator: operator,
 						lhs: args[0].t,
 						field: type.getID().resolve().field(field.name),
-						noAssign: field.meta.has("noAssign")
+						noAssign: noAssign
 					});
 				}
 				else
@@ -304,7 +342,7 @@ class OverloadOperator
 						field: type.getID().resolve().field(field.name),
 						rhs: monofy(args[1].t),
 						commutative: commutative,
-						noAssign: field.meta.has("noAssign")
+						noAssign: noAssign
 					});
 				}
 			}
