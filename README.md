@@ -8,15 +8,16 @@ Usage
 
 Working with this library consists of two steps:
 
-1. Create a class YourOperatorClass defining the operators and
-2. add implements IOverloadOperator<YourOperatorClass> where you want to use it
+1. Create a class `YourOperatorClass` defining the operators and
+2. add implements `IOverloadOperator<YourOperatorClass>` where you want to use it
 
 Bundled with this library are a few operator-defining classes, which include
-* Int32 and Int64: use haxe.Int32 and haxe.Int64 as if they were normal Ints
-* Point: support for nme's Point data structure
-* Complex: use concise infix notation on complex numbers
-* Quaternion: if you want to rotate things in funny ways, this math is for you
-* Reflection: translate o["field"] to matching Reflect calls
+
+* `Int32` and `Int64`: use haxe.Int32 and haxe.Int64 as if they were normal Ints
+* `Point`: support for nme's Point data structure
+* `Complex`: use concise infix notation on complex numbers
+* `Quaternion`: if you want to rotate things in funny ways, this math is for you
+* `Reflection`: translate o["field"] to matching Reflect calls
 
 Defining and using operators
 -------
