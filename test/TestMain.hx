@@ -13,6 +13,7 @@ class TestMain
 		r.add(new TestInt64());
 		r.add(new TestHxs());
 		r.add(new TestReflection());
+		r.add(new TestNew());
 		r.run();
 	}
 }

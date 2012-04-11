@@ -4,47 +4,20 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
 
-import tink.core.types.Option;
 import tink.macro.build.MemberTransformer;
 
 using tink.macro.tools.MacroTools;
 using tink.core.types.Outcome;
 
-enum Binop
-{
-	Binop(op:haxe.macro.Expr.Binop);
-	OpArray;
-}
-
-typedef BaseFunc = {
-	operator: String,
-	lhs: Type,
-	field: Expr,
-	noAssign: Bool
-};
-
-typedef UnopFunc = {
-	> BaseFunc,
-	prefix: Bool,
-	postfix: Bool,
-}
-
-typedef BinopFunc = {
-	> BaseFunc,
-	rhs: Type,
-	commutative: Bool
-}
-
-typedef IdentDef = Array<{ name : String, type : Null<ComplexType>, expr : Null<Expr> }>; 
+import opover.engine.Types;
 
 class OverloadOperator 
 {
-	static public var binops:Hash<Array<BinopFunc>> = new Hash();
-	static public var unops:Hash<Array<UnopFunc>> = new Hash();
+	static var operatorManager = new OperatorManager();
 	
 	@:macro static public function build():Array<Field>
 	{
-		return new MemberTransformer().build([getMathType, overload]);
+		return new MemberTransformer().build([getOperators, overload]);
 	}
 	
 	static function overload(ctx:ClassBuildContext)
@@ -97,10 +70,21 @@ class OverloadOperator
 		{
 			var e = switch(e.expr)
 			{
+				case ENew(tp, params):
+					var tParams = [];
+					for (param in params)
+						tParams.push(transform(param, ctx));
+					switch(operatorManager.findNew(tp, tParams, ctx, e.pos))
+					{
+						case None:
+							e;					
+						case Some(opFunc):
+							opFunc;
+					}
 				case EArray(lhs, rhs):
 					lhs = transform(lhs, ctx, lValue);
 					rhs = transform(rhs, ctx);
-					switch(findBinop(OpArray, lhs, rhs, lValue, ctx, e.pos))
+					switch(operatorManager.findBinop(OpArray, lhs, rhs, lValue, ctx, e.pos))
 					{
 						case None:
 							e;
@@ -117,7 +101,7 @@ class OverloadOperator
 					}
 					lhs = transform(lhs, ctx, info.assign || info.op == OpAssign);
 					rhs = transform(rhs, ctx);
-					switch(findBinop(Binop(info.op), lhs, rhs, info.assign, ctx, e.pos))
+					switch(operatorManager.findBinop(Binop(info.op), lhs, rhs, info.assign, ctx, e.pos))
 					{
 						case None:
 							e;
@@ -127,7 +111,7 @@ class OverloadOperator
 				case EUnop(op, postFix, lhs):
 					var assign = (op == OpIncrement || op == OpDecrement);
 					lhs = transform(lhs, ctx, assign);
-					switch(findUnop(op, postFix, lhs, ctx, e.pos))
+					switch(operatorManager.findUnop(Unop(op), postFix, lhs, ctx, e.pos))
 					{
 						case None:
 							e;
@@ -152,83 +136,6 @@ class OverloadOperator
 		}, initCtx);
 	}
 	
-	static function findBinop(op:Binop, lhs:Expr, rhs:Expr, isAssign:Bool, ctx:IdentDef, p, ?commutative = true)
-	{
-		var opString = (switch(op)
-		{
-			case Binop(op): tink.macro.tools.Printer.binoperator(op);
-			case OpArray: "[]";
-		}) + (isAssign ? "=" : "");
-
-		if (!binops.exists(opString))
-			return None;
-
-		var t1 = switch(lhs.typeof(ctx))
-		{
-			case Success(t): Context.follow(t);
-			case Failure(f): Context.error("Could not determine type: " +f + " | " +lhs.toString(), p);
-		}
-		
-		var t2 = switch(rhs.typeof(ctx))
-		{
-			case Success(t): Context.follow(t);
-			case Failure(f): Context.error("Could not determine type: " +f, p);
-		}
-		
-		for (opFunc in binops.get(opString))
-		{
-			if (!commutative && !opFunc.commutative)
-				continue;
-
-			switch(t1.isSubTypeOf(opFunc.lhs))
-			{
-				case Failure(_): continue;
-				default:
-			}
-			if (t1.isDynamic() && !opFunc.lhs.isDynamic()) continue;
-			
-			switch(t2.isSubTypeOf(opFunc.rhs))
-			{
-				case Failure(_): continue;
-				default:
-			}	
-			if (t2.isDynamic() && !opFunc.rhs.isDynamic()) continue;
-
-			return Some({noAssign:opFunc.noAssign, func:opFunc.field.call([lhs, rhs])});
-		}
-		if (commutative)
-			return findBinop(op, rhs, lhs, isAssign, ctx, p, false);
-		else
-			return None;
-	}
-	
-	static function findUnop(op:Unop, postfix:Bool, lhs:Expr, ctx:IdentDef, p)
-	{
-		var opString = tink.macro.tools.Printer.unoperator(op);
-		if (!unops.exists(opString))
-			return None;
-		
-		var t1 = switch(lhs.typeof(ctx))
-		{
-			case Success(t): t;
-			case Failure(f): Context.error("Could not determine type: " +f + " | " +lhs.toString(), p);
-		}
-
-		for (opFunc in unops.get(opString))
-		{
-			if (postfix && !opFunc.postfix || !postfix && !opFunc.prefix) continue;
-			
-			switch(t1.isSubTypeOf(opFunc.lhs))
-			{
-				case Failure(s): continue;
-				default:
-			}
-			if (t1.isDynamic() && !opFunc.lhs.isDynamic()) continue;
-			return Some({noAssign:opFunc.noAssign, func:opFunc.field.call([lhs]) });
-		}
-		return None;
-	}	
-	
 	static function getMembers(cls:ClassType, ctx:IdentDef)
 	{
 		for (field in cls.fields.get())
@@ -237,7 +144,7 @@ class OverloadOperator
 			getMembers(cls.superClass.t.get(), ctx);
 	}
 	
-	static function getMathType(ctx:ClassBuildContext)
+	static function getOperators(ctx:ClassBuildContext)
 	{
 		var type = getDataType(ctx.cls).reduce();
 		var fields = switch(type.getStatics())
@@ -283,6 +190,18 @@ class OverloadOperator
 				var args = switch(field.type.reduce())
 				{
 					case TFun(args, ret):
+						if (operator == "new")
+						{
+							operatorManager.addUnop({
+								prefix: true,
+								postfix: false,
+								operator: "new",
+								lhs: monofy(ret.reduce()),
+								field: type.getID().resolve().field(field.name),
+								noAssign: false
+							});	
+							continue;
+						}
 						args;
 					default:
 						Context.warning("Only functions can be used as operators.", field.pos);
@@ -314,10 +233,8 @@ class OverloadOperator
 						postfix = false;
 						operator = operator.substr(0, -1);
 					}
-					
-					if (!unops.exists(operator))
-						unops.set(operator, []);
-					unops.get(operator).push( {
+
+					operatorManager.addUnop( {
 						prefix: prefix,
 						postfix: postfix,
 						operator: operator,
@@ -334,9 +251,7 @@ class OverloadOperator
 						commutative = false;
 					}
 
-					if (!binops.exists(operator))
-						binops.set(operator, []);
-					binops.get(operator).push( {
+					operatorManager.addBinop({
 						operator: operator,
 						lhs: monofy(args[0].t),
 						field: type.getID().resolve().field(field.name),
@@ -348,7 +263,7 @@ class OverloadOperator
 			}
 		}
 	}
-	
+
 	static function monofy(t:Type)
 	{
 		return switch(t)
