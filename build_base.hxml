@@ -1,3 +1,6 @@
 -D haxe_209
+-cp src
+-cp test
 -cp ../tinkerbell/src
 -lib hxs
+-main TestMain
