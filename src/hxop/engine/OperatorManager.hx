@@ -1,5 +1,7 @@
 package hxop.engine;
 
+#if macro
+
 import haxe.macro.Context;
 import haxe.macro.Type;
 import haxe.macro.Expr;
@@ -169,3 +171,5 @@ class OperatorManager
 		return None;
 	}
 }
+
+#end

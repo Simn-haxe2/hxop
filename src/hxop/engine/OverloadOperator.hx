@@ -1,25 +1,47 @@
 package hxop.engine;
 
+#if macro
+
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
 
 import tink.macro.build.MemberTransformer;
 
+import hxop.engine.Types;
+
 using tink.macro.tools.MacroTools;
 using tink.core.types.Outcome;
 
-import hxop.engine.Types;
+#end
 
 class OverloadOperator 
-{
-	static var operatorManager = new OperatorManager();
-	
-	@:macro static public function build():Array<Field>
+{	
+	@:macro static public function build(?mathClass:String):Array<Field>
 	{
-		return new MemberTransformer().build([getOperators, overload]);
+		var cl = Context.getLocalClass().get();
+		if (cl.meta.has("noOverload") || cl.isExtern || cl.isInterface)
+			return Context.getBuildFields();
+
+		if (mathClass != null)
+			findOperators(Context.getType(mathClass));
+		
+		try
+		{
+			new MemberTransformer().build([getOperators]);
+		} catch (e:Dynamic)
+		{
+			if (mathClass == null)
+				Context.error("Must implement HxOp or call hxop.engine.OverloadOperator with an argument.", Context.currentPos());
+		}
+
+		return new MemberTransformer().build([overload]);
 	}
 	
+	#if macro
+	
+	static var operatorManager = new OperatorManager();
+
 	static function overload(ctx:ClassBuildContext)
 	{
 		var env = [];
@@ -146,7 +168,11 @@ class OverloadOperator
 	
 	static function getOperators(ctx:ClassBuildContext)
 	{
-		var type = getDataType(ctx.cls).reduce();
+		findOperators(getDataType(ctx.cls).reduce());
+	}
+	
+	static function findOperators(type:Type)
+	{
 		var fields = switch(type.getStatics())
 		{
 			case Success(fields):
@@ -154,7 +180,7 @@ class OverloadOperator
 			case Failure(e):
 				Context.error(e, Context.currentPos());
 		}
-
+		
 		for (field in fields)
 		{
 			if (!field.meta.has("op"))
@@ -300,6 +326,7 @@ class OverloadOperator
 		for (i in cls.interfaces)
 			if (i.t.get().name == "HxOp") return i.params[0];
 		
-		return Context.error("Must implement HxOp.", Context.currentPos());
+		throw "notFound";
 	}
+	#end
 }

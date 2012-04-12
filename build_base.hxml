@@ -4,3 +4,4 @@
 -cp ../tinkerbell/src
 -lib hxs
 -main TestMain
+--macro hxop.Compiler.overload(['test'], 'OddStringTools')

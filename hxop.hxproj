@@ -25,7 +25,7 @@
     <option flashStrict="True" />
     <option mainClass="TestMain" />
     <option enabledebug="True" />
-    <option additional="" />
+    <option additional="--macro hxop.Compiler.overload(['test'], 'OddStringTools')" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
@@ -33,7 +33,7 @@
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
-    
+    <!-- example: <compile path="..." /> -->
   </compileTargets>
   <!-- Assets to embed into the output SWF -->
   <library>

@@ -2,7 +2,7 @@ import haxe.unit.TestRunner;
 
 class TestMain
 {
-	 static public function main() 
+	static public function main() 
 	{
 		var r = new TestRunner();
 		r.add(new TestComplex());
@@ -14,6 +14,7 @@ class TestMain
 		r.add(new TestHxs());
 		r.add(new TestReflection());
 		r.add(new TestNew());
+		r.add(new TestAutoBuild());
 		r.run();
 	}
 }
