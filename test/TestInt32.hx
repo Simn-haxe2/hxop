@@ -1,5 +1,5 @@
-import opover.IOverloadOperator;
-import opover.math.Int32Math;
+import hxop.HxOp;
+import hxop.math.Int32Math;
 import haxe.Int32;
 import haxe.unit.TestCase;
 
@@ -8,7 +8,7 @@ import haxe.unit.TestCase;
  * @author deep <system.grand@gmail.com>
  */
 
-class TestInt32 extends TestCase, implements IOverloadOperator<Int32Math>
+class TestInt32 extends TestCase, implements HxOp<Int32Math>
 {
 
 	public function new() 

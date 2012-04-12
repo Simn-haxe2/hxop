@@ -9,7 +9,7 @@ Usage
 Working with this library consists of two steps:
 
 1. Create a class `YourOperatorClass` defining the operators and
-2. add implements `IOverloadOperator<YourOperatorClass>` where you want to use it
+2. add implements `HxOp<YourOperatorClass>` where you want to use it
 
 Bundled with this library are a few operator-defining classes, which include
 
@@ -45,7 +45,7 @@ With just that you can start using your += operator like so:
 
 ```
 
-class Main implements opover.IOverloadOperator<SignalMath>
+class Main implements hxop.HxOp<SignalMath>
 {
 	static public function main()
 	{

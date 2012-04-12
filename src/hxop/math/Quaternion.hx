@@ -1,4 +1,4 @@
-package opover.math;
+package hxop.math;
 
 class Quaternion
 {

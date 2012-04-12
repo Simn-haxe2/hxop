@@ -1,4 +1,4 @@
-package opover.math;
+package hxop.math;
 import hxs.Signal;
 import hxs.Signal1;
 

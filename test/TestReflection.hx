@@ -1,8 +1,8 @@
-import opover.IOverloadOperator;
-import opover.math.ReflectionMath;
+import hxop.HxOp;
+import hxop.math.ReflectionMath;
 import haxe.unit.TestCase;
 
-class TestReflection extends TestCase, implements IOverloadOperator<ReflectionMath>
+class TestReflection extends TestCase, implements HxOp<ReflectionMath>
 {
 	public function testBasic()
 	{

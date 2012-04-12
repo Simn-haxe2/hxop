@@ -1,6 +1,6 @@
-import opover.IOverloadOperator;
-import opover.math.Complex;
-import opover.math.ComplexMath;
+import hxop.HxOp;
+import hxop.math.Complex;
+import hxop.math.ComplexMath;
 import haxe.unit.TestCase;
 
 /**
@@ -37,7 +37,7 @@ class ComplexChild extends Complex
 	
 }
 
-class TestComplex extends TestCase, implements IOverloadOperator<ComplexMath>
+class TestComplex extends TestCase, implements HxOp<ComplexMath>
 {
 
 	public function new() 

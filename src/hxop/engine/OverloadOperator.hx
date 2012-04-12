@@ -1,4 +1,4 @@
-package opover.engine;
+package hxop.engine;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -9,7 +9,7 @@ import tink.macro.build.MemberTransformer;
 using tink.macro.tools.MacroTools;
 using tink.core.types.Outcome;
 
-import opover.engine.Types;
+import hxop.engine.Types;
 
 class OverloadOperator 
 {
@@ -298,8 +298,8 @@ class OverloadOperator
 	static function getDataType(cls:haxe.macro.Type.ClassType):haxe.macro.Type
 	{
 		for (i in cls.interfaces)
-			if (i.t.get().name == "IOverloadOperator") return i.params[0];
+			if (i.t.get().name == "HxOp") return i.params[0];
 		
-		return Context.error("Must implement IOverloadOperator.", Context.currentPos());
+		return Context.error("Must implement HxOp.", Context.currentPos());
 	}
 }

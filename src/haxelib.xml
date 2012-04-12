@@ -1,0 +1,8 @@
+<project name="hxop" url="https://github.com/Simn/hxop" license="BSD">
+    <user name="simn"/>
+    <tag v="cross"/>
+    <tag v="utility"/>
+    <description>Allows overloading of unary and binary haxe operators.</description>
+    <version name="0.1">Initial release</version>
+    <depends name="tink_macros" version="0.2.3"/>
+</project>
