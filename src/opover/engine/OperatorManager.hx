@@ -64,7 +64,7 @@ class OperatorManager
 		var t2 = switch(rhs.typeof(ctx))
 		{
 			case Success(t): Context.follow(t);
-			case Failure(f): Context.error("Could not determine type: " +f, p);
+			case Failure(f): Context.error("Could not determine type: " +f + " | " +rhs.toString(), p);
 		}
 		
 		for (opFunc in binops.get(opString))

@@ -64,7 +64,7 @@ class OverloadOperator
 		}
 	}
 
-	static function transform(expr:Expr, initCtx:IdentDef, lValue = false)
+	static function transform(expr:Expr, initCtx:IdentDef, lValue:Bool = false)
 	{
 		return expr.map(function(e, ctx)
 		{
@@ -187,85 +187,90 @@ class OverloadOperator
 						true;
 				}
 				
-				var args = switch(field.type.reduce())
-				{
-					case TFun(args, ret):
-						if (operator == "new")
-						{
-							var tArgs = [];
-							for (arg in args)
-								tArgs.push( { name:arg.name, opt:arg.opt, t:monofy(arg.t) } );
-							operatorManager.addNew({
-								operator: "new",
-								lhs: monofy(ret.reduce()),
-								field: type.getID().resolve().field(field.name),
-								args: tArgs,
-								noAssign: false
-							});	
-							continue;
-						}
-						args;
-					default:
-						Context.warning("Only functions can be used as operators.", field.pos);
-						continue;						
-				};
-				
-				if (args.length > 2 || args.length == 0)
-				{
-					Context.warning("Only unary and binary operators are supported.", field.pos);
-					continue;
-				}
-					
-				var noAssign = field.meta.has("noAssign");
-				
-				if (args.length == 1)
-				{
-					if (noAssign && (operator == "--" || operator == "++"))
-						Context.error("Combination of @noAssign and " +operator + " is invalid, use x" +operator + " or " +operator + "x to define a postfix or prefix operation.", field.pos);
-						
-					var postfix = true;
-					var prefix = true;
-					if (operator.charAt(0) == "x")
-					{
-						prefix = false;
-						operator = operator.substr(1);
-					}
-					else if (operator.charAt(operator.length - 1) == "x")
-					{
-						postfix = false;
-						operator = operator.substr(0, -1);
-					}
-
-					operatorManager.addUnop( {
-						prefix: prefix,
-						postfix: postfix,
-						operator: operator,
-						lhs: args[0].t,
-						field: type.getID().resolve().field(field.name),
-						noAssign: noAssign
-					});
-				}
-				else
-				{
-					if (commutative && args[0].t.isSubTypeOf(args[1].t).isSuccess())
-					{
-						Context.warning("Found commutative definition, but types are equal.", field.pos);
-						commutative = false;
-					}
-
-					operatorManager.addBinop({
-						operator: operator,
-						lhs: monofy(args[0].t),
-						field: type.getID().resolve().field(field.name),
-						rhs: monofy(args[1].t),
-						commutative: commutative,
-						noAssign: noAssign
-					});
-				}
+				buildOperatorFunc(field, type, operator, commutative);
 			}
 		}
 	}
 
+	static function buildOperatorFunc(field:ClassField, type:Type, operator:String, commutative:Bool)
+	{
+		var args = switch(field.type.reduce())
+		{
+			case TFun(args, ret):
+				if (operator == "new")
+				{
+					var tArgs = [];
+					for (arg in args)
+						tArgs.push( { name:arg.name, opt:arg.opt, t:monofy(arg.t) } );
+					operatorManager.addNew({
+						operator: "new",
+						lhs: monofy(ret.reduce()),
+						field: type.getID().resolve().field(field.name),
+						args: tArgs,
+						noAssign: false
+					});	
+					return;
+				}
+				args;
+			default:
+				Context.warning("Only functions can be used as operators.", field.pos);
+				return;						
+		};
+		
+		if (args.length > 2 || args.length == 0)
+		{
+			Context.warning("Only unary and binary operators are supported.", field.pos);
+			return;
+		}
+			
+		var noAssign = field.meta.has("noAssign");
+		
+		if (args.length == 1)
+		{
+			if (noAssign && (operator == "--" || operator == "++"))
+				Context.error("Combination of @noAssign and " +operator + " is invalid, use x" +operator + " or " +operator + "x to define a postfix or prefix operation.", field.pos);
+				
+			var postfix = true;
+			var prefix = true;
+			if (operator.charAt(0) == "x")
+			{
+				prefix = false;
+				operator = operator.substr(1);
+			}
+			else if (operator.charAt(operator.length - 1) == "x")
+			{
+				postfix = false;
+				operator = operator.substr(0, -1);
+			}
+
+			operatorManager.addUnop( {
+				prefix: prefix,
+				postfix: postfix,
+				operator: operator,
+				lhs: args[0].t,
+				field: type.getID().resolve().field(field.name),
+				noAssign: noAssign
+			});
+		}
+		else
+		{
+			if (commutative && args[0].t.isSubTypeOf(args[1].t).isSuccess())
+			{
+				Context.warning("Found commutative definition, but types are equal.", field.pos);
+				commutative = false;
+			}
+
+			operatorManager.addBinop({
+				operator: operator,
+				lhs: monofy(args[0].t),
+				field: type.getID().resolve().field(field.name),
+				rhs: monofy(args[1].t),
+				commutative: commutative,
+				noAssign: noAssign
+			});
+		}
+	}
+	
 	static function monofy(t:Type)
 	{
 		return switch(t)

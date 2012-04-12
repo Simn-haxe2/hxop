@@ -1,7 +1,7 @@
 Haxe operator overloading
 =============
 
-This library enables overloading of unary and binary haxe operators. It can be used to allow mathematical operations on complex data structures, or give a whole new meaning to the array access operator []. 
+This library enables overloading of unary and binary haxe operators. It can be used to allow mathematical operations on complex data structures, or give a whole new meaning to the array access operator [] or the `new` operator.
 
 Usage
 -------
@@ -66,3 +66,4 @@ Remarks
 * `@op` accepts a second argument of type `Bool`, which defaults to false and defines if an operator is commutative. For example, if you define an operator + that adds `Float` and `Point`, you likely want to allow this on both `(Float + Point)` and `(Point + Float)`, so you would set this argument to true. Note that this only makes sense if your operands are of different types.
 * If you have a situation where you want to disable overloading for a specific function of a class implementing `IOperatorOverload`, you can annotate it with `@noOverload`.
 * Usually, assignment operators such as += and *= generate an assignment of their return value to the left hand side argument. If you wish to disable it for certain operators, you can add the `@noAssign` metadata.
+* Supported operators are all unary and binary haxe operators. Also, array access [] is treated as a binary operator lhs[rhs] and `new` is supported as a pseudo-operator.
