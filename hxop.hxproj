@@ -25,7 +25,7 @@
     <option flashStrict="True" />
     <option mainClass="TestMain" />
     <option enabledebug="True" />
-    <option additional="--macro hxop.Compiler.overload(['test'], 'OddStringTools')" />
+    <option additional="" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>

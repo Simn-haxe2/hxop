@@ -14,7 +14,7 @@ class TestMain
 		r.add(new TestHxs());
 		r.add(new TestReflection());
 		r.add(new TestNew());
-		r.add(new TestAutoBuild());
+		//r.add(new TestAutoBuild());
 		r.run();
 	}
 }

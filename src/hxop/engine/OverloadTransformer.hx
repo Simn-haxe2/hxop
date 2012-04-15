@@ -163,7 +163,7 @@ class OverloadTransformer
 	static function getMembers(cls:ClassType, ctx:IdentDef)
 	{
 		for (field in cls.fields.get())
-			ctx.push( { name:field.name, type:null, expr: null } );
+			ctx.push( { name:field.name, type:monofy(field.type.reduce()).toComplex(), expr: null } );
 		if (cls.superClass != null)
 			getMembers(cls.superClass.t.get(), ctx);
 	}
