@@ -31,6 +31,6 @@ class TestHxs extends TestCase, implements Overload<HxsMath>
 			assertEquals("foo", s);
 			assertEquals(5, i);
 		};
-		s1.dispatch("foo", 9);
+		s1.dispatch("foo", 5);
 	}	
 }

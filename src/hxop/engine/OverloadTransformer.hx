@@ -19,9 +19,16 @@ using tink.macro.tools.TypeTools;
 
 class OverloadTransformer
 {	
+	static var finishedClasses = new Hash();
+	
 	@:macro static public function build(?opsClass:String):Array<Field>
 	{
 		var cl = Context.getLocalClass().get();
+		
+		var signature = Context.signature(cl);
+		if (finishedClasses.exists(signature))
+			return finishedClasses.get(signature);
+
 		if (cl.meta.has("noOverload") || cl.isExtern || cl.isInterface)
 			return Context.getBuildFields();
 
@@ -37,7 +44,10 @@ class OverloadTransformer
 				Context.error("Must implement hxop.Overload or call hxop.engine.OverloadTransformer with an argument.", Context.currentPos());
 		}
 
-		return new MemberTransformer().build([overload]);
+		
+		var fields = new MemberTransformer().build([overload]);
+		finishedClasses.set(signature, fields);
+		return fields;
 	}
 	
 	#if macro
@@ -87,7 +97,22 @@ class OverloadTransformer
 			}
 		}
 	}
-
+	
+	static function getMembers(cls:ClassType, ctx:IdentDef)
+	{
+		for (field in cls.fields.get())
+			ctx.push( { name:field.name, type:monofy(field.type.reduce()).toComplex(), expr: null } );
+		if (cls.superClass != null)
+			getMembers(cls.superClass.t.get(), ctx);
+	}
+	
+	static function getOperators(ctx:ClassBuildContext)
+	{
+		for (i in ctx.cls.interfaces)
+			if (i.t.get().name == "Overload")
+				findOperators(i.params[0].reduce());
+	}
+	
 	static function transform(expr:Expr, initCtx:IdentDef, lValue:Bool = false)
 	{
 		return expr.map(function(e, ctx)
@@ -159,20 +184,7 @@ class OverloadTransformer
 			return e;
 		}, initCtx);
 	}
-	
-	static function getMembers(cls:ClassType, ctx:IdentDef)
-	{
-		for (field in cls.fields.get())
-			ctx.push( { name:field.name, type:monofy(field.type.reduce()).toComplex(), expr: null } );
-		if (cls.superClass != null)
-			getMembers(cls.superClass.t.get(), ctx);
-	}
-	
-	static function getOperators(ctx:ClassBuildContext)
-	{
-		findOperators(getDataType(ctx.cls).reduce());
-	}
-	
+
 	static function findOperators(type:Type)
 	{
 		var fields = switch(type.getStatics())
@@ -322,13 +334,6 @@ class OverloadTransformer
 				t;
 		}
 	}
-	
-	static function getDataType(cls:haxe.macro.Type.ClassType):haxe.macro.Type
-	{
-		for (i in cls.interfaces)
-			if (i.t.get().name == "Overload") return i.params[0];
-		
-		throw "notFound";
-	}
+
 	#end
 }
