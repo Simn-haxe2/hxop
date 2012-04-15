@@ -9,7 +9,7 @@ Usage
 Working with this library consists of two steps:
 
 1. Create a class `YourOperatorClass` defining the operators and
-2. add implements `HxOp<YourOperatorClass>` where you want to use it
+2. add implements `hxop.Overload<YourOperatorClass>` where you want to use it
 
 Bundled with this library are a few operator-defining classes, which include
 
@@ -45,7 +45,7 @@ With just that you can start using your += operator like so:
 
 ```
 
-class Main implements hxop.HxOp<SignalMath>
+class Main implements hxop.Overload<SignalMath>
 {
 	static public function main()
 	{
@@ -64,6 +64,6 @@ Remarks
 -------
 
 * `@op` accepts a second argument of type `Bool`, which defaults to false and defines if an operator is commutative. For example, if you define an operator + that adds `Float` and `Point`, you likely want to allow this on both `(Float + Point)` and `(Point + Float)`, so you would set this argument to true. Note that this only makes sense if your operands are of different types.
-* If you have a situation where you want to disable overloading for a specific function of a class implementing `IOperatorOverload`, you can annotate it with `@noOverload`.
+* If you have a situation where you want to disable overloading for a specific function of a class implementing `hxop.Overload`, you can annotate it with `@noOverload`.
 * Usually, assignment operators such as += and *= generate an assignment of their return value to the left hand side argument. If you wish to disable it for certain operators, you can add the `@noAssign` metadata.
 * Supported operators are all unary and binary haxe operators. Also, array access [] is treated as a binary operator lhs[rhs] and `new` is supported as a pseudo-operator.
