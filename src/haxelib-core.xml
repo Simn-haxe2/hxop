@@ -2,7 +2,8 @@
     <user name="simn"/>
     <tag v="cross"/>
     <tag v="utility"/>
-    <description>Allows overloading of unary and binary haxe operators.</description>
-    <version name="0.1">Initial release</version>
+	<tag v="operator"/>
+    <description>Operator overloading for haxe.</description>
+    <version name="1.0">Initial release</version>
     <depends name="tink_macros" version="0.2.3"/>
 </project>
