@@ -14,7 +14,9 @@ class TestMain
 		r.add(new TestHxs());
 		r.add(new TestReflection());
 		r.add(new TestNew());
+		#if !php
 		r.add(new TestMultipleOverloads());
+		#end
 		//r.add(new TestAutoBuild());
 		r.run();
 	}

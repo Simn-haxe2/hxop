@@ -1,7 +1,6 @@
 package hxop.ops;
 
-typedef ReflectionValue = Dynamic;
-typedef ReflectionFunc = ?ReflectionValue -> ReflectionValue;
+typedef ReflectionFunc = ?Dynamic -> Dynamic;
 
 class ReflectionOps
 {

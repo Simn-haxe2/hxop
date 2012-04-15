@@ -31,6 +31,10 @@ class TestReflection extends TestCase, implements Overload<ReflectionOps>
 		
 		assertEquals(11, function() { [0];  return o; } ()["j"]);
 		assertEquals("bar", ( { [0]; { foo:"bar" }; } )["foo"]);
+		
+		o["j"] += o["i"] += 1;
+		assertEquals(12, o.i);
+		assertEquals(23, o.j);
 	}
 	
 	public function testOperators()
