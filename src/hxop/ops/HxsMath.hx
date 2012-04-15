@@ -1,6 +1,7 @@
 package hxop.ops;
 import hxs.Signal;
 import hxs.Signal1;
+import hxs.Signal2;
 
 class HxsMath
 {
@@ -14,5 +15,11 @@ class HxsMath
 	{
 		lhs.add(rhs);
 		return lhs;
-	}	
+	}
+	
+	@op("+=") static public function add2<T1, T2>(lhs:Signal2<T1, T2>, rhs:T1->T2->Void)
+	{
+		lhs.add(rhs);
+		return lhs;
+	}		
 }

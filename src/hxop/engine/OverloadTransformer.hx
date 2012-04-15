@@ -163,7 +163,7 @@ class OverloadTransformer
 	static function getMembers(cls:ClassType, ctx:IdentDef)
 	{
 		for (field in cls.fields.get())
-			ctx.push( { name:field.name, type:null, expr: null } ); // TODO: this might be dirty
+			ctx.push( { name:field.name, type:null, expr: null } );
 		if (cls.superClass != null)
 			getMembers(cls.superClass.t.get(), ctx);
 	}
@@ -195,7 +195,7 @@ class OverloadTransformer
 					case Success(operator):
 						operator;
 					case Failure(_):
-						Context.warning("Argument to @:op must be String.", meta[0].pos);
+						Context.warning("First argument to @op must be String.", meta[0].pos);
 						continue;
 				}
 
@@ -207,11 +207,11 @@ class OverloadTransformer
 							case "true": true;
 							case "false": false;
 							default:
-								Context.warning("Second argument to @:op must be Bool.", meta[0].pos);
+								Context.warning("Second argument to @op must be Bool.", meta[0].pos);
 								true;
 						}
 					case Failure(f):
-						Context.warning("Second argument to @:op must be Bool.", meta[0].pos);
+						Context.warning("Second argument to @op must be Bool.", meta[0].pos);
 						true;
 				}
 				
