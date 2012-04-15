@@ -6,7 +6,7 @@ import nme.geom.Point;
  * @author deep <system.grand@gmail.com>
  */
 
-class PointMath 
+class PointOps 
 {
 
 	@op("+", true) public static function add(a:Point, b:Point):Point

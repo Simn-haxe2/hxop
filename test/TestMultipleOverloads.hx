@@ -1,11 +1,11 @@
 package ;
 import haxe.unit.TestCase;
 import hxop.ops.Quaternion;
-import hxop.ops.QuaternionMath;
-import hxop.ops.ReflectionMath;
+import hxop.ops.QuaternionOps;
+import hxop.ops.ReflectionOps;
 import hxop.Overload;
 
-class TestMultipleOverloads extends TestCase, implements Overload<ReflectionMath>, implements Overload<QuaternionMath>
+class TestMultipleOverloads extends TestCase, implements Overload<ReflectionOps>, implements Overload<QuaternionOps>
 {
 	public function test1()
 	{

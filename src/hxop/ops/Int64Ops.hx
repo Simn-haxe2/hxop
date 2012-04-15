@@ -7,7 +7,7 @@ import haxe.Int64;
  * @author deep <system.grand@gmail.com>
  */
 
-class Int64Math 
+class Int64Ops
 {
 
 	@op("+") inline static public var add = Int64.add;

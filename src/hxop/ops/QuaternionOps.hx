@@ -1,6 +1,6 @@
 package hxop.ops;
 
-class QuaternionMath
+class QuaternionOps
 {
 	// basic arithmetic
 	

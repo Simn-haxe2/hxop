@@ -1,5 +1,5 @@
 import hxop.Overload;
-import hxop.ops.Int64Math;
+import hxop.ops.Int64Ops;
 import haxe.Int64;
 import haxe.unit.TestCase;
 
@@ -8,7 +8,7 @@ import haxe.unit.TestCase;
  * @author deep <system.grand@gmail.com>
  */
 
-class TestInt64 extends TestCase, implements Overload<Int64Math>
+class TestInt64 extends TestCase, implements Overload<Int64Ops>
 {
 
 	public function new() 

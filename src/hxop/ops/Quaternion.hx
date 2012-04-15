@@ -22,12 +22,12 @@ class Quaternion
 	
 	public function normalize()
 	{
-		return QuaternionMath.scalarDiv(this, getNorm());
+		return QuaternionOps.scalarDiv(this, getNorm());
 	}
 	
 	public function invert()
 	{
-		return QuaternionMath.scalar(QuaternionMath.conjugate(this), getNorm());
+		return QuaternionOps.scalar(QuaternionOps.conjugate(this), getNorm());
 	}
 	
 	public function copy()
@@ -47,7 +47,7 @@ class Quaternion
 		var y = fromAxisAngle(0, 1, 0, yaw);
 		var z = fromAxisAngle(0, 0, 1, roll);
 
-		return QuaternionMath.mul(QuaternionMath.mul(x, y), z);
+		return QuaternionOps.mul(QuaternionOps.mul(x, y), z);
 	}
 	
 	public function toString()

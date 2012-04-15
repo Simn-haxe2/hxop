@@ -1,5 +1,5 @@
 import hxop.Overload;
-import hxop.ops.Int32Math;
+import hxop.ops.Int32Ops;
 import haxe.Int32;
 import haxe.unit.TestCase;
 
@@ -8,7 +8,7 @@ import haxe.unit.TestCase;
  * @author deep <system.grand@gmail.com>
  */
 
-class TestInt32 extends TestCase, implements Overload<Int32Math>
+class TestInt32 extends TestCase, implements Overload<Int32Ops>
 {
 
 	public function new() 

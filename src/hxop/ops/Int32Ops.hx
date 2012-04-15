@@ -6,7 +6,7 @@ import haxe.Int32;
  * @author deep <system.grand@gmail.com>
  */
 
-class Int32Math 
+class Int32Ops
 {
 
 

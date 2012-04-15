@@ -1,4 +1,4 @@
-import hxop.ops.QuaternionMath;
+import hxop.ops.QuaternionOps;
 import hxop.ops.Quaternion;
 import hxop.Overload;
 import haxe.unit.TestCase;
@@ -13,7 +13,7 @@ enum Bla
 	Qua(q:Quaternion);
 }
  
-class TestQuaternion extends TestCase, implements Overload<QuaternionMath>
+class TestQuaternion extends TestCase, implements Overload<QuaternionOps>
 {	
 
 	public function testGetNorm()

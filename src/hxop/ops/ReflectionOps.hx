@@ -3,7 +3,7 @@ package hxop.ops;
 typedef ReflectionValue = Dynamic;
 typedef ReflectionFunc = ?ReflectionValue -> ReflectionValue;
 
-class ReflectionMath
+class ReflectionOps
 {
 	static inline function access(base:Dynamic, access:String, ?value:Dynamic)
 	{
@@ -23,7 +23,7 @@ class ReflectionMath
 	
 	@op("[]=") @noAssign static public function write(base:Dynamic, access:String):ReflectionFunc
 	{
-		return callback(ReflectionMath.access, base, access);
+		return callback(ReflectionOps.access, base, access);
 	}
 		
 	@op("=") static public inline function assign(lhs:ReflectionFunc, rhs:Dynamic):Dynamic

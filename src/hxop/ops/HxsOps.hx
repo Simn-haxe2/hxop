@@ -3,7 +3,7 @@ import hxs.Signal;
 import hxs.Signal1;
 import hxs.Signal2;
 
-class HxsMath
+class HxsOps
 {
 	@op("+=") static public function add0(lhs:Signal, rhs:Void->Void)
 	{

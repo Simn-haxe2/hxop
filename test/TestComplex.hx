@@ -1,6 +1,6 @@
 import hxop.Overload;
 import hxop.ops.Complex;
-import hxop.ops.ComplexMath;
+import hxop.ops.ComplexOps;
 import haxe.unit.TestCase;
 
 /**
@@ -37,7 +37,7 @@ class ComplexChild extends Complex
 	
 }
 
-class TestComplex extends TestCase, implements Overload<ComplexMath>
+class TestComplex extends TestCase, implements Overload<ComplexOps>
 {
 
 	public function new() 
@@ -53,7 +53,7 @@ class TestComplex extends TestCase, implements Overload<ComplexMath>
 		
 		c3 = c1 + c2;
 		
-		assertTrue(ComplexMath.eq(c3, new Complex( -2, 4)));
+		assertTrue(ComplexOps.eq(c3, new Complex( -2, 4)));
 	}
 	
 	function test2()
@@ -75,7 +75,7 @@ class TestComplex extends TestCase, implements Overload<ComplexMath>
 		
 		var c3 = c + c2;
 		
-		assertTrue(c3 == ComplexMath.add(c, c2));
+		assertTrue(c3 == ComplexOps.add(c, c2));
 	}
 	
 	function test4()
@@ -105,7 +105,7 @@ class TestComplex extends TestCase, implements Overload<ComplexMath>
 	{
 		var c = new Complex(0, 1);
 		
-		c = ComplexMath.add(new Complex(2, 1), c * c);
+		c = ComplexOps.add(new Complex(2, 1), c * c);
 		
 		assertTrue(c == new Complex(1, 1));
 		
@@ -119,9 +119,9 @@ class TestComplex extends TestCase, implements Overload<ComplexMath>
 		var c2 = new Complex(-3, 4);
 		var c3 = new Complex(6, -3);
 		
-		assertTrue(c1 + c2 * c3 == ComplexMath.add(c1, ComplexMath.mult(c2, c3)));
+		assertTrue(c1 + c2 * c3 == ComplexOps.add(c1, ComplexOps.mult(c2, c3)));
 		
-		assertTrue(c2 * c3 + c1 == ComplexMath.add(c1, ComplexMath.mult(c2, c3)));
+		assertTrue(c2 * c3 + c1 == ComplexOps.add(c1, ComplexOps.mult(c2, c3)));
 		
 		assertTrue(c1 + c2 * c3 == c2 * c3 + c1);
 		assertTrue(c1 + c2 * c3 == c1 + (c2 * c3));
@@ -155,7 +155,7 @@ class TestComplex extends TestCase, implements Overload<ComplexMath>
 		assertTrue(cProp == _cProp);
 		
 		a[2] = a[0] * a[1];
-		assertTrue(a[2] == ComplexMath.mult(a[0], a[1]));
+		assertTrue(a[2] == ComplexOps.mult(a[0], a[1]));
 	}
 	
 	function test8()

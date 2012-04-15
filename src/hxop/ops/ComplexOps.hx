@@ -5,7 +5,7 @@ package hxop.ops;
  * @author deep <system.grand@gmail.com>
  */
 
-class ComplexMath 
+class ComplexOps
 {
 
 	@op("+") inline static public function add(a:Complex, b:Complex):Complex
