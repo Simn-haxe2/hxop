@@ -1,9 +1,9 @@
-<project name="hxop-math" url="https://github.com/Simn/hxop" license="BSD">
+<project name="hxop-ops" url="https://github.com/Simn/hxop" license="BSD">
     <user name="simn"/>
     <tag v="cross"/>
     <tag v="utility"/>
 	<tag v="operator"/>
-    <description>Operator overloading for haxe.</description>
+    <description>Operator overloading for haxe - Operator overloading classes</description>
     <version name="1.0">Initial release</version>
     <depends name="hxop"/>
 </project>

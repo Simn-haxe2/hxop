@@ -1,6 +1,6 @@
-import hxop.HxOp;
-import hxop.math.Complex;
-import hxop.math.ComplexMath;
+import hxop.Overload;
+import hxop.ops.Complex;
+import hxop.ops.ComplexMath;
 import haxe.unit.TestCase;
 
 /**
@@ -37,7 +37,7 @@ class ComplexChild extends Complex
 	
 }
 
-class TestComplex extends TestCase, implements HxOp<ComplexMath>
+class TestComplex extends TestCase, implements Overload<ComplexMath>
 {
 
 	public function new() 

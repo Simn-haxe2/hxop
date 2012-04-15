@@ -1,4 +1,4 @@
-package hxop.math;
+package hxop.ops;
 import nme.geom.Point;
 
 /**

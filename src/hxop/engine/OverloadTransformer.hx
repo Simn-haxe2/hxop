@@ -10,29 +10,31 @@ import tink.macro.build.MemberTransformer;
 
 import hxop.engine.Types;
 
-using tink.macro.tools.MacroTools;
 using tink.core.types.Outcome;
+using tink.macro.tools.ExprTools;
+using tink.macro.tools.MetadataTools;
+using tink.macro.tools.TypeTools;
 
 #end
 
-class OverloadOperator 
+class OverloadTransformer
 {	
-	@:macro static public function build(?mathClass:String):Array<Field>
+	@:macro static public function build(?opsClass:String):Array<Field>
 	{
 		var cl = Context.getLocalClass().get();
 		if (cl.meta.has("noOverload") || cl.isExtern || cl.isInterface)
 			return Context.getBuildFields();
 
-		if (mathClass != null)
-			findOperators(Context.getType(mathClass));
+		if (opsClass != null)
+			findOperators(Context.getType(opsClass));
 		
 		try
 		{
 			new MemberTransformer().build([getOperators]);
 		} catch (e:Dynamic)
 		{
-			if (mathClass == null)
-				Context.error("Must implement HxOp or call hxop.engine.OverloadOperator with an argument.", Context.currentPos());
+			if (opsClass == null)
+				Context.error("Must implement hxop.Overload or call hxop.engine.OverloadTransformer with an argument.", Context.currentPos());
 		}
 
 		return new MemberTransformer().build([overload]);
@@ -324,7 +326,7 @@ class OverloadOperator
 	static function getDataType(cls:haxe.macro.Type.ClassType):haxe.macro.Type
 	{
 		for (i in cls.interfaces)
-			if (i.t.get().name == "HxOp") return i.params[0];
+			if (i.t.get().name == "Overload") return i.params[0];
 		
 		throw "notFound";
 	}

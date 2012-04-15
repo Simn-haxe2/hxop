@@ -1,6 +1,6 @@
 package ;
 import haxe.unit.TestCase;
-import hxop.HxOp;
+import hxop.Overload;
 
 class MyClass
 {
@@ -36,7 +36,7 @@ class MyClass
 }
 
 #if !macro
-class TestNew extends TestCase, implements HxOp<MyClass>
+class TestNew extends TestCase, implements Overload<MyClass>
 {
 	public function testBasic()
 	{

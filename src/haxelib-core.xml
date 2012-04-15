@@ -3,7 +3,7 @@
     <tag v="cross"/>
     <tag v="utility"/>
 	<tag v="operator"/>
-    <description>Operator overloading for haxe.</description>
+    <description>Operator overloading for haxe - Core</description>
     <version name="1.0">Initial release</version>
     <depends name="tink_macros" version="0.2.3"/>
 </project>

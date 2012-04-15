@@ -1,10 +1,10 @@
-import hxop.HxOp;
-import hxop.math.HxsMath;
+import hxop.Overload;
+import hxop.ops.HxsMath;
 import haxe.unit.TestCase;
 import hxs.Signal;
 import hxs.Signal1;
 
-class TestHxs extends TestCase, implements HxOp<HxsMath>
+class TestHxs extends TestCase, implements Overload<HxsMath>
 {
 	public function testArg0()
 	{

@@ -3,16 +3,16 @@ package hxop.engine;
 #if macro
 
 import haxe.macro.Context;
-import haxe.macro.Type;
 import haxe.macro.Expr;
+import haxe.macro.Type;
 
 import tink.core.types.Option;
 
 import hxop.engine.Types;
 
-using tink.macro.tools.TypeTools;
-using tink.macro.tools.ExprTools;
 using tink.core.types.Outcome;
+using tink.macro.tools.ExprTools;
+using tink.macro.tools.TypeTools;
 
 class OperatorManager 
 {

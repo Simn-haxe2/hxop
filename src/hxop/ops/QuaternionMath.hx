@@ -1,4 +1,4 @@
-package hxop.math;
+package hxop.ops;
 
 class QuaternionMath
 {

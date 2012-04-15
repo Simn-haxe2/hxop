@@ -1,4 +1,4 @@
-package hxop.math;
+package hxop.ops;
 
 typedef ReflectionValue = Dynamic;
 typedef ReflectionFunc = ?ReflectionValue -> ReflectionValue;
