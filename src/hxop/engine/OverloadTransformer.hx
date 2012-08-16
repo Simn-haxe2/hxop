@@ -316,14 +316,14 @@ class OverloadTransformer
 		return switch(t)
 		{
 			case TInst(cl, params):
-				if (cl.get().kind == KTypeParameter)
-					TPath({ name: "Dynamic", pack: [], params: [], sub: null }).toType().sure();
-				else
-				{
-					var newParams = [];
-					for (param in params)
-						newParams.push(monofy(param));
-					TInst(cl, newParams);
+				switch(cl.get().kind) {
+					case KTypeParameter(_):
+						TPath({ name: "Dynamic", pack: [], params: [], sub: null }).toType().sure();
+					default:
+						var newParams = [];
+						for (param in params)
+							newParams.push(monofy(param));
+						TInst(cl, newParams);
 				}
 			case TFun(args, ret):
 				var newArgs = [];

@@ -22,7 +22,7 @@ class ReflectionOps
 	
 	@op("[]=") @noAssign static public function write(base:Dynamic, access:String):ReflectionFunc
 	{
-		return callback(ReflectionOps.access, base, access);
+		return callback(ReflectionOps.access, base, access, _);
 	}
 		
 	@op("=") static public inline function assign(lhs:ReflectionFunc, rhs:Dynamic):Dynamic
