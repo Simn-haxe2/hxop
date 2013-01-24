@@ -1,6 +1,8 @@
 Haxe operator overloading
 =============
 
+OBSOLETE: This library is no longer maintained
+
 This library enables overloading of unary and binary haxe operators. It can be used to allow mathematical operations on complex data structures, or give a whole new meaning to the array access operator [] or the `new` operator.
 
 Usage
